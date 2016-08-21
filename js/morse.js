@@ -156,7 +156,7 @@ function Signal(freq) {
 Signal.ctx = new (window.AudioContext || window.webkitAudioContext)();
 
 Signal.prototype.on = function() {
-  this.vol.gain.value = .5;
+  this.vol.gain.value = 1;
 }
 
 Signal.prototype.off = function() {
