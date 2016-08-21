@@ -1,0 +1,87 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+}
+
+#header {
+  font-family: 'Verdana';
+  text-align: center;
+  padding: 20px 0;
+}
+
+#outer {
+  background-color: #fff;
+}
+
+#controls {
+  position: relative;
+  height: 200px;
+}
+
+#play {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  width: 100px;
+  height: 100px;
+  background-image: url('../img/play.svg');
+  background-size: 100px 100px;
+  background-color: transparent;
+}
+
+#play.replay {
+  background-image: url('../img/replay.svg');
+}
+
+#next {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 75%;
+  margin-left: -25px;
+  margin-top: -25px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  background-image: url('../img/forward.svg');
+  background-size: 50px 50px;
+}
+
+#answers {
+  display: flex;
+  justify-content: space-around;
+}
+
+#answers button {
+  width: 70px;
+  height: 70px;
+  color: black;
+  font-family: 'Verdana';
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 100px;
+  background-color: #eee;
+  text-transform: uppercase;
+}
+
+#answers button.correct {
+  background-color: #5cb85c;
+  color: #fff;
+}
+
+#answers button.wrong {
+  background-color: #d9534f;
+  color: #fff;
+}
