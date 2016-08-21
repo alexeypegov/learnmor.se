@@ -1,3 +1,5 @@
+"use strict";
+
 var WPM_PARIS_DOTS = 50;
 var WPM_CODEX_DOTS = 60;
 
