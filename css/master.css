@@ -1,3 +1,7 @@
+body, html {
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -9,17 +13,17 @@ button {
   padding: 0;
 }
 
-body {
-}
-
 #header {
-  font-family: 'Verdana';
+  font-family: 'Helvetica', sans-serif;
   text-align: center;
-  padding: 20px 0;
+  padding-top: 40px;
+  color: #666;
+  font-size: 120%;
 }
 
-#outer {
-  background-color: #fff;
+#content {
+  position: relative;
+  height: 100%;
 }
 
 #controls {
@@ -42,7 +46,27 @@ body {
 }
 
 #play.replay {
-  background-image: url('../img/replay.svg');
+  background-image: url('../img/play.svg');
+}
+
+#settings {
+  display: block;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  top: 50%;
+  left: 25%;
+  left: calc(25% - 20px);
+  margin-left: -25px;
+  margin-top: -25px;
+  border-radius: 50px;
+  font-size: 20px;
+  font-family: "Helvetica", sans-serif;
+  background-color: transparent;
+  border: 3px solid #000;
+  color: #000;
 }
 
 #next {
@@ -50,6 +74,7 @@ body {
   position: absolute;
   top: 50%;
   left: 75%;
+  left: calc(75% + 20px);
   margin-left: -25px;
   margin-top: -25px;
   width: 50px;
@@ -68,9 +93,8 @@ body {
   width: 70px;
   height: 70px;
   color: black;
-  font-family: 'Verdana';
+  font-family: 'Helvetica', sans-serif;
   font-size: 20px;
-  font-weight: bold;
   border-radius: 100px;
   background-color: #eee;
   text-transform: uppercase;
@@ -84,4 +108,45 @@ body {
 #answers button.wrong {
   background-color: #d9534f;
   color: #fff;
+}
+
+#settingsPanel {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  padding-top: 100px;
+  background-color: #fff;
+}
+
+#settingsPanel button {
+  box-sizing: border-box;
+  line-height: 70px;
+  width: 70px;
+  height: 70px;
+  font-family: "Helvetica", sans-serif;
+  font-size: 20px;
+  border-radius: 100px;
+  border: 2px solid #000;
+  color: #000;
+  background-color: #fff;
+  line-height: 70px;
+}
+
+#settingsPanel .section .levels {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+}
+
+#settingsPanel .section .title {
+  font-family: "Helvetica", sans-serif;
+  text-transform: capitalize;
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  color: #555;
+  font-size: 20px;
+  text-align: center;
 }

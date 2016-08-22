@@ -60,33 +60,50 @@
     throw Error('Not implemented!');
   }
 
-  function Level1Data() {
+  function Level1(chars) {
     Data.call(this, 5);
+    this.chars = chars;
   }
 
-  Level1Data.prototype = Object.create(Data.prototype);
-  Level1Data.prototype.constructor = Level1Data;
+  Level1.prototype = Object.create(Data.prototype);
+  Level1.prototype.constructor = Level1;
 
-  Level1Data.prototype._createNewQuestion = function() {
-    return new Question(Level1Data.generateRandomChars(4), 2);
+  Level1.prototype._createNewQuestion = function() {
+    return new Question(Level1.chooseRandomly(4, this.chars), 2);
   }
 
-  Level1Data.generateRandomChars = function(numOfChars) {
-    var chars = [];
-    while (true) {
-      var ndx = Math.floor(Math.random() * 26);
-      var char = String.fromCharCode(97 + ndx);
-      if (chars.indexOf(char) < 0) {
-        chars.push(char);
+  Level1.chooseRandomly = function(howMany, chars) {
+    var result = [];
+    while (result.length < howMany) {
+      var ndx = Math.floor(Math.random() * howMany);
+      var probe = chars[ndx];
+      if (result.indexOf(probe) === -1) {
+        result.push(probe);
       }
-
-      if (chars.length === numOfChars) break;
     }
 
-    return chars.sort();
+    return result;
   }
 
+  function Levels() {}
+
+  Levels.sections = [];
+  Levels.sectionMap = {};
+
+  Levels.register = function(level, section) {
+    if (!Levels.sectionMap.hasOwnProperty(section)) {
+      Levels.sections.push(section);
+      Levels.sectionMap[section] = [level];
+    } else {
+      Levels.sectionMap[section].push(level);
+    }
+  }
+
+  Levels.register(new Level1(['a', 'b', 'c', 'd', 'e', 'f']), 'alphabet');
+  Levels.register(new Level1(['g', 'h', 'i', 'j', 'k', 'l', 'm']), 'alphabet');
+  Levels.register(new Level1(['n', 'o', 'p', 'q', 'r', 's', 't']), 'alphabet');
+  Levels.register(new Level1(['u', 'v', 'w', 'x', 'y', 'z']), 'alphabet');
 
   global.Data = Data;
-  global.Level1Data = Level1Data;
+  global.Levels = Levels;
 })(this);
