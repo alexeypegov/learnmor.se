@@ -157,10 +157,10 @@
     $('#repeat').on('click', this.play.bind(this));
 
     $(window).on('keypress', function(e) {
-      if (e.which === 13) {
+      if (e.which === 32) {
         self.next();
         e.preventDefault();
-      } else if (e.which === 32) {
+      } else if (e.which === 13) {
         self.play();
         e.preventDefault();
       }
