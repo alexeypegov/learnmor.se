@@ -138,10 +138,8 @@ function App() {
   this.answers = new Answers();
   var self = this;
 
-  this.playButton.button$.on('click', this.play.bind(this));
-
-  var next$ = $('#next');
-  next$.on('click', this.doNext.bind(this));
+  this.playButton.button$.on('click', this.next.bind(this));
+  $('#repeat').on('click', this.play.bind(this));
 
   this.settings = new Settings(this);
 }
@@ -169,10 +167,12 @@ App.prototype.getQuestion = function() {
   return this.question;
 }
 
-App.prototype.doNext = function() {
+App.prototype.next = function() {
   this.playButton.reset();
   this.answers.reset();
   this.question = null;
+
+  this.play();
 }
 
 App.prototype.lock = function() {
