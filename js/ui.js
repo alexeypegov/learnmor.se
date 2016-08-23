@@ -160,10 +160,13 @@ App.prototype.play = function() {
 
 App.prototype.onLevelChosen = function(level) {
   this.level = level;
+  this.question = null;
 }
 
 App.prototype.getQuestion = function() {
-  return this.level.newQuestion();
+  if (this.question) return this.question;
+  this.question = this.level.newQuestion();
+  return this.question;
 }
 
 App.prototype.doNext = function() {
