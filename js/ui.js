@@ -158,17 +158,12 @@ App.prototype.play = function() {
   }.bind(this));
 }
 
-App.prototype.onLevelChosen = function(data) {
-  this.data = data;
+App.prototype.onLevelChosen = function(level) {
+  this.level = level;
 }
 
 App.prototype.getQuestion = function() {
-  if (this.question) {
-    return this.question;
-  }
-
-  this.question = this.data.newQuestion();
-  return this.question;
+  return this.level.newQuestion();
 }
 
 App.prototype.doNext = function() {

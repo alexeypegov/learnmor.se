@@ -46,36 +46,18 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function Data(numOfQuesions) {
-    this.numOfQuesions = numOfQuesions;
-    this.questions = [];
-  }
-
-  Data.prototype.newQuestion = function() {
-    this.questions.push(this._createNewQuestion());
-    return this.questions.slice(-1)[0];
-  }
-
-  Data.prototype._createNewQuestion = function() {
-    throw Error('Not implemented!');
-  }
-
   function Level1(chars) {
-    Data.call(this, 5);
     this.chars = chars;
   }
 
-  Level1.prototype = Object.create(Data.prototype);
-  Level1.prototype.constructor = Level1;
-
-  Level1.prototype._createNewQuestion = function() {
+  Level1.prototype.newQuestion = function() {
     return new Question(Level1.chooseRandomly(4, this.chars), 2);
   }
 
   Level1.chooseRandomly = function(howMany, chars) {
     var result = [];
     while (result.length < howMany) {
-      var ndx = Math.floor(Math.random() * howMany);
+      var ndx = Math.floor(Math.random() * chars.length);
       var probe = chars[ndx];
       if (result.indexOf(probe) === -1) {
         result.push(probe);
@@ -104,6 +86,5 @@
   Levels.register(new Level1(['n', 'o', 'p', 'q', 'r', 's', 't']), 'alphabet');
   Levels.register(new Level1(['u', 'v', 'w', 'x', 'y', 'z']), 'alphabet');
 
-  global.Data = Data;
   global.Levels = Levels;
 })(this);
