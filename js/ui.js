@@ -3,21 +3,18 @@
 
   function PlayButton() {
     this.button$ = $('#play');
+  }
 
-    var self = this;
-    this.button$.on('click', function() {
-      if (!self.button$.hasClass('replay')) {
-        self.button$.addClass('replay');
-      }
-    });
+  PlayButton.prototype.toggleReplay = function(state) {
+    this.button$.toggleClass('replay', state === undefined ? true : state);
   }
 
   PlayButton.prototype.enable = function(enable) {
     this.button$.toggleClass('disabled', !enable);
   }
 
-  PlayButton.prototype.reset = function() {
-    this.button$.removeClass('replay');
+  PlayButton.prototype.isReplay = function() {
+    return this.button$.hasClass('replay');
   }
 
   /*
@@ -88,9 +85,10 @@
    * Answers
    */
 
-  function Answers() {
+  function Answers(app) {
     this.answers$ = $('#answers');
     this.initKeyboard();
+    this.app = app;
   }
 
   Answers.prototype.reset = function() {
@@ -143,6 +141,7 @@
           button$.parent().find('[value="%(v)"]'.replace('%(v)', question.getAnswer())).toggleClass('correct', true);
         }
 
+        this.app.answered();
         this.answered = true;
       }
     }
@@ -150,11 +149,15 @@
 
   function App() {
     this.playButton = new PlayButton();
-    this.answers = new Answers();
+    this.answers = new Answers(this);
     var self = this;
 
     this.playButton.button$.on('click', this.next.bind(this));
-    $('#repeat').on('click', this.play.bind(this));
+
+    // todo: do we need it?
+    this.repeat$ = $('#repeat');
+    this.repeat$.on('click', this.play.bind(this));
+    this.repeat$.hide();
 
     $(window).on('keypress', function(e) {
       if (e.which === 32) {
@@ -173,12 +176,17 @@
     this.lock();
     var question = this.getQuestion();
     new Morse(20).play(question.getAnswer()).then(function() {
-      if (!this.answers.answered) {
+      if (!this.playButton.isReplay() && !this.answers.answered) {
         this.answers.placeAnswers(question);
       }
 
+      this.playButton.toggleReplay();
       this.unlock();
     }.bind(this));
+  }
+
+  App.prototype.answered = function() {
+    this.playButton.toggleReplay(false);
   }
 
   App.prototype.onLevelChosen = function(level) {
@@ -193,7 +201,12 @@
   }
 
   App.prototype.next = function() {
-    this.playButton.reset();
+    if (!this.answers.answered) {
+      this.play();
+      return;
+    }
+
+    this.playButton.toggleReplay(false);
     this.answers.reset();
     this.question = null;
 
@@ -201,11 +214,11 @@
   }
 
   App.prototype.lock = function() {
-
+    this.playButton.enable(false);
   }
 
   App.prototype.unlock = function() {
-
+    this.playButton.enable(true);
   }
 
   App.prototype.placeAnswers = function(data) {

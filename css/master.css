@@ -45,6 +45,10 @@ button {
   background-color: transparent;
 }
 
+#play.replay {
+  background-image: url('../img/replay.svg');
+}
+
 #settings {
   display: block;
   position: absolute;
