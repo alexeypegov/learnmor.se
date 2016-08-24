@@ -81,10 +81,10 @@
     }
   }
 
-  Levels.register(new Level1(['a', 'b', 'c', 'd', 'e', 'f']), 'alphabet');
-  Levels.register(new Level1(['g', 'h', 'i', 'j', 'k', 'l', 'm']), 'alphabet');
-  Levels.register(new Level1(['n', 'o', 'p', 'q', 'r', 's', 't']), 'alphabet');
-  Levels.register(new Level1(['u', 'v', 'w', 'x', 'y', 'z']), 'alphabet');
+  Levels.register(new Level1(['e', 't', 'a', 'i', 'm', 'n']), 'alphabet');
+  Levels.register(new Level1(['d', 'g', 'k', 'o', 'r', 's', 'u']), 'alphabet');
+  Levels.register(new Level1(['w', 'b', 'c', 'f', 'h', 'j', 'l']), 'alphabet');
+  Levels.register(new Level1(['p', 'q', 'v', 'x', 'y', 'z']), 'alphabet');
 
   global.Levels = Levels;
 })(this);
