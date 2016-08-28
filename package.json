@@ -1,0 +1,33 @@
+{
+  "name": "learnmor.se",
+  "version": "1.0.0",
+  "description": "Morse learning tool",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "typings install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexeypegov/learnmor.se.git"
+  },
+  "keywords": [
+    "morse",
+    "learn"
+  ],
+  "author": "Alexey Pegov",
+  "bugs": {
+    "url": "https://github.com/alexeypegov/learnmor.se/issues"
+  },
+  "homepage": "https://github.com/alexeypegov/learnmor.se#readme",
+  "devDependencies": {
+    "browserify": "^13.1.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.13.6",
+    "gulp-uglify": "^2.0.0",
+    "tsify": "^1.0.4",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}

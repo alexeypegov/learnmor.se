@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitUseStrict": true,
+        "removeComments": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "pretty": true
+    },
+    "exclude": [
+        "node_modules",
+        "typings"
+    ],
+    "compileOnSave": false,
+    "buildOnSave": false,
+    "atom": {
+        "rewriteTsconfig": false
+    },
+    "files": [
+      "src/morse.ts",
+      "src/browser.ts",
+      "src/data.ts",
+      "src/app.ts"
+    ]
+}
