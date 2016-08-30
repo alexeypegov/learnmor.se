@@ -19,7 +19,7 @@ export abstract class Question {
     return this._variants;
   }
 
-  abstract answer(variant: string): void;
+  public abstract answer(variant: string): void;
 
   abstract initUI(parent$: JQuery): void;
 
@@ -44,20 +44,41 @@ class SimpleQuestion extends Question {
   private MAX_TRY_COUNT = 2;
   private _tryCount = 0;
   private _guessed = false;
+  private parent$: JQuery;
 
   constructor(question: string, variants: string[]) {
     super(question, variants)
   }
 
-  answer(probe: string): void {
-    let correct = probe === this.question;
+  public answer(probe: string): void {
+    if (this.variants.indexOf(probe) < 0 || this._answered) return;
 
-    if (correct || !this.hasMoreTries()) {
+    this._tryCount = this._tryCount + 1;
+
+    let correct = probe === this.question;
+    let hasMoreTries = this.hasMoreTries();
+
+    if (correct || !hasMoreTries) {
       this._answered = true;
       this._guessed = correct;
       this.fireAnswered();
+    }
+
+    this.updateUI(probe);
+  }
+
+  private updateUI(probe: string): void {
+    if (!this.parent$) return;
+
+    let btn$ = this.parent$.find(`button[value="${probe.toLowerCase()}"]`);
+    if (this._guessed) {
+      btn$.toggleClass('correct', true);
     } else {
-      this._tryCount = this._tryCount + 1;
+      btn$.toggleClass('wrong', true);
+
+      if (!this.hasMoreTries()) {
+        this.parent$.find(`button[value="${this.question}"]`).toggleClass('correct', true);
+      }
     }
   }
 
@@ -74,6 +95,7 @@ class SimpleQuestion extends Question {
   }
 
   initUI(parent$: JQuery): void {
+    this.parent$ = parent$;
     parent$.children().remove();
 
     this.variants.forEach((variant) => {
@@ -86,18 +108,6 @@ class SimpleQuestion extends Question {
         }
 
         this.answer(variant);
-
-        if (this.isGuessed()) {
-          button$.toggleClass('correct', true);
-        } else {
-          button$.toggleClass('wrong', true);
-        }
-
-        if (!this.hasMoreTries()) {
-          if (!this.isGuessed()) {
-            button$.parent().find(`[value="${this.question}"]`).toggleClass('correct', true);
-          }
-        }
       });
     });
   }

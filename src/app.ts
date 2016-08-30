@@ -1,6 +1,6 @@
 /// <reference path="../typings/globals/jquery/index.d.ts" />
 
-import { visibility } from './browser';
+import { visibility, keyEventToString } from './browser';
 import { Morse } from './morse';
 import { Question, QuestionFactory, Registry } from './data';
 
@@ -83,6 +83,8 @@ class App {
   settings: Settings;
   morse: Morse;
 
+  locked: boolean = false;
+
   constructor() {
     this.initButtons();
     // this.initKeyboard();
@@ -96,18 +98,37 @@ class App {
     visibility((visible: boolean) => {
       if (!visible && this.morse) {
         this.morse.cancel();
+        this.locked = false;
       }
     });
+
+    document.addEventListener('keydown', (event) => this.handleKeyEvent(event));
+  }
+
+  private handleKeyEvent(event: KeyboardEvent): void {
+    if (this.locked) return;
+
+    if (event.which === 32) {
+      this.play();
+      event.preventDefault();
+      return;
+    }
+
+    let key = keyEventToString(event);
+    if (this.question) {
+      this.question.answer(key);
+    }
   }
 
   private play(): void {
-    this.lock();
+    if (this.locked) return;
 
+    this.locked = true;
     let question = this.getQuestion();
     this.morse = new Morse();
     this.morse.play(question.question, (success) => {
       this.morse = null;
-      this.unlock();
+      this.locked = false;
     });
   }
 
@@ -141,25 +162,12 @@ class App {
     this.playButton.toggleReplay(false);
   }
 
-  private lock(): void {
-    // todo
-  }
-
-  private unlock(): void {
-    // todo
-  }
-
   private initButtons(): void {
     this.playButton = new PlayButton();
     this.playButton.onClick(() => {
       this.playButton.toggleReplay(true);
-      this.nextOrReplay();
+      this.play();
     });
-  }
-
-  private nextOrReplay(): void {
-    this.play();
-    // todo
   }
 }
 

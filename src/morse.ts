@@ -37,6 +37,7 @@ export class Morse {
         start.play(this.frequency, this.signal, (success) => {
           this.signal.stop();
           this.signal = null;
+          cb(success);
         });
       }, 30);
     }
