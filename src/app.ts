@@ -1,5 +1,6 @@
 /// <reference path="../typings/globals/jquery/index.d.ts" />
 
+import { VisibilityMonitor } from './browser';
 import { Morse } from './morse';
 import { Question, QuestionFactory, Registry } from './data';
 
@@ -80,6 +81,7 @@ class App {
   factory: QuestionFactory;
   answers$: JQuery;
   settings: Settings;
+  morse: Morse;
 
   constructor() {
     this.initButtons();
@@ -90,13 +92,21 @@ class App {
 
     this.answers$ = $('#answers');
     this.onFactoryChosen(Registry.initial());
+
+    new VisibilityMonitor((visible: boolean) => {
+      if (!visible && this.morse) {
+        this.morse.cancel();
+      }
+    });
   }
 
   private play(): void {
     this.lock();
 
     let question = this.getQuestion();
-    new Morse().play(question.question, (success) => {
+    this.morse = new Morse();
+    this.morse.play(question.question, (success) => {
+      this.morse = null;
       this.unlock();
     });
   }

@@ -1,16 +1,25 @@
-export function isPageVisible() {
-  let stateKey: string, eventKey: string, keys = {
-    hidden: 'visibilitychange',
-    webkitHidden: 'webkitvisibilitychange',
-    mozHidden: 'mozvisibilitychange',
-    msHidden: 'msvisibilitychange'
-  };
+export type VisibilityListener = (visibility: boolean) => void;
+export class VisibilityMonitor {
+  constructor(private listener: VisibilityListener) {
+    const props = {
+      hidden: 'visibilitychange',
+      webkitHidden: 'webkitvisibilitychange',
+      mozHidden: 'mozvisibilitychange',
+      msHidden: 'msvisibilitychange'
+    };
 
-  for (stateKey in keys) {
+    let eventKey: string, stateKey: string;
+    for (stateKey in props) {
       if (stateKey in document) {
-          eventKey = keys[stateKey];
-          break;
+        eventKey = props[stateKey];
+        break;
       }
+    }
+
+    if (eventKey) {
+      document.addEventListener(eventKey, (event) => {
+        this.listener(!event.target[stateKey]);
+      });
+    }
   }
-  return !document[stateKey];
 }

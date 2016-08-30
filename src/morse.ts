@@ -19,6 +19,8 @@ const ALPHABET = {
 };
 
 export class Morse {
+    private signal: Signal;
+
     constructor(private wpm:number = 20, private frequency: number = 680) {
     }
 
@@ -29,7 +31,20 @@ export class Morse {
       }
 
       let start = builder.build();
-      start.play(this.frequency, cb);
+
+      this.signal = new Signal(680);
+      setTimeout(() => {
+        start.play(this.frequency, this.signal, (success) => {
+          this.signal.stop();
+          this.signal = null;
+        });
+      }, 30);
+    }
+
+    public cancel() {
+      if (this.signal) {
+        this.signal.stop();
+      }
     }
 }
 
@@ -131,6 +146,7 @@ class Signal {
   private volume: GainNode;
 
   private _on: boolean = false;
+  private _stopped = false;
 
   constructor(private frequency:number) {
     this.oscillator = Signal.ctx.createOscillator();
@@ -145,23 +161,38 @@ class Signal {
     this.oscillator.start();
   }
 
+  isStopped(): boolean {
+    return this._stopped;
+  }
+
   on(): void {
-    if (!this._on) {
+    if (!this._on && !this._stopped) {
       this._on = true;
-      this.volume.gain.value = 1;
+      this.setVolume(1);
     }
+  }
+
+  private setVolume(volume: number) {
+    let now = Signal.ctx.currentTime;
+    this.volume.gain.cancelScheduledValues(now);
+    this.volume.gain.setValueAtTime(this.volume.gain.value, now);
+    this.volume.gain.linearRampToValueAtTime(volume, now + 0.015);
   }
 
   off(): void {
     if (this._on) {
       this._on = false;
-      this.volume.gain.value = 0;
+      this.setVolume(0);
     }
   }
 
   stop(): void {
-    this.off();
+    if (this.isStopped()) {
+      return;
+    }
 
+    this.off();
+    this._stopped = true;
     setTimeout(() => this.oscillator.stop(), 30);
   }
 }
@@ -176,34 +207,26 @@ class Tone {
     return tone;
   }
 
-  withSignal(frequency: number, signal: Signal, callback: (signal: Signal) => void) {
-    let _cb = callback.bind(this);
-    if (signal) {
-      _cb(signal);
-    } else {
-      let _signal = new Signal(frequency);
-      setTimeout(() => _cb(_signal), 30);
+  play(frequency: number, signal: Signal, onFinished: (success: boolean) => void) {
+    if (signal.isStopped()) {
+      return;
     }
-  }
 
-  play(frequency: number, onFinished: (success: boolean) => void, signal: Signal = null) {
-    this.withSignal(frequency, signal, (_signal: Signal) => {
+    if (!this.silent) {
+      signal.on();
+    }
+
+    setTimeout(() => {
       if (!this.silent) {
-        _signal.on();
+        signal.off();
       }
 
-      setTimeout(() => {
-        if (!this.silent) {
-          _signal.off();
-        }
-
-        if (this.next /* && isVisible() */) {
-          this.next.play(frequency, onFinished, _signal);
-        } else {
-          _signal.stop();
-          onFinished(true /* !isVisible() */);
-        }
-      }, this.duration);
-    });
+      if (this.next) {
+        this.next.play(frequency, signal, onFinished);
+      } else {
+        signal.stop();
+        onFinished(true);
+      }
+    }, this.duration);
   }
 }
