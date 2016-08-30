@@ -1,6 +1,6 @@
 /// <reference path="../typings/globals/jquery/index.d.ts" />
 
-import { VisibilityMonitor } from './browser';
+import { visibility } from './browser';
 import { Morse } from './morse';
 import { Question, QuestionFactory, Registry } from './data';
 
@@ -93,7 +93,7 @@ class App {
     this.answers$ = $('#answers');
     this.onFactoryChosen(Registry.initial());
 
-    new VisibilityMonitor((visible: boolean) => {
+    visibility((visible: boolean) => {
       if (!visible && this.morse) {
         this.morse.cancel();
       }
