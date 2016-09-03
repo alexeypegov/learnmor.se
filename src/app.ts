@@ -11,19 +11,27 @@ class Button {
     this.el$ = $(selector);
   }
 
-  public setEnabled(enabled: boolean) {
+  set enabled(enabled: boolean) {
     this.el$.attr('aria-disabled', `${!enabled}`);
   }
 
-  public onClick(cb: (button$?: JQuery, value?: any) => void) {
+  onClick(cb: (button$?: JQuery, value?: any) => void) {
     this.el$.on('click', () => {
       cb(this.el$, this.el$.val());
       return false;
     })
   }
 
-  public setText(s: string): void {
+  setText(s: string): void {
     this.el$.html(s);
+  }
+
+  set visible(visible: boolean) {
+    this.el$.toggle(visible);
+  }
+
+  get visible(): boolean {
+    return this.el$.is(':visible');
   }
 }
 
@@ -76,18 +84,19 @@ class Settings {
 }
 
 class App {
-  playButton: PlayButton;
-  question: Question;
-  factory: QuestionFactory;
-  answers$: JQuery;
-  settings: Settings;
-  morse: Morse;
+  private playButton: PlayButton;
+  private repeatButton: Button;
+  private question: Question;
+  private previousQuestion: Question;
+  private factory: QuestionFactory;
+  private answers$: JQuery;
+  private settings: Settings;
+  private morse: Morse;
 
-  locked: boolean = false;
+  private locked: boolean = false;
 
   constructor() {
     this.initButtons();
-    // this.initKeyboard();
 
     this.settings = new Settings();
     this.settings.onLevelSelected((factory) => this.onFactoryChosen(factory));
@@ -123,6 +132,7 @@ class App {
   private play(): void {
     if (this.locked) return;
 
+    this.repeatButton.visible = false;
     this.locked = true;
     let question = this.getQuestion();
     this.morse = new Morse();
@@ -148,8 +158,10 @@ class App {
       // this.question.deinitUI(this.answers$);
     // }
 
+    this.previousQuestion = this.question;
     this.question = null;
     this.playButton.toggleReplay(false);
+    this.repeatButton.visible = true;
   }
 
   onFactoryChosen(factory: QuestionFactory): void {
@@ -167,6 +179,13 @@ class App {
     this.playButton.onClick(() => {
       this.playButton.toggleReplay(true);
       this.play();
+    });
+
+    this.repeatButton = new Button('#repeat');
+    this.repeatButton.onClick(() => {
+      if (this.previousQuestion) {
+        new Morse().play(this.previousQuestion.question);
+      }
     });
   }
 }

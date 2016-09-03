@@ -19,8 +19,7 @@ export abstract class Question {
     return this._variants;
   }
 
-  public abstract answer(variant: string): void;
-
+  abstract answer(variant: string): void;
   abstract initUI(parent$: JQuery): void;
 
   deinitUI(parent$: JQuery): void {
@@ -50,7 +49,7 @@ class SimpleQuestion extends Question {
     super(question, variants)
   }
 
-  public answer(probe: string): void {
+  answer(probe: string): void {
     if (this.variants.indexOf(probe) < 0 || this._answered) return;
 
     this._tryCount = this._tryCount + 1;
@@ -113,6 +112,15 @@ class SimpleQuestion extends Question {
   }
 }
 
+class SequenceQuestion extends Question {
+  answer(probe: string): void {
+
+  }
+
+  initUI(parent$: JQuery): void {
+  }
+}
+
 export type QuestionFactory = () => Question;
 
 export class Registry {
@@ -128,7 +136,7 @@ export class Registry {
     }
   }
 
-  public static populateLevels(parent$: JQuery) {
+  static populateLevels(parent$: JQuery) {
     if (!parent$.children().length) {
       let level = 1;
       Registry._sections.forEach((s) => {
@@ -147,7 +155,7 @@ export class Registry {
     }
   }
 
-  public static getFactory(level: number): QuestionFactory {
+  static getFactory(level: number): QuestionFactory {
     let currentLevel = 1;
 
     for (let i = 0; i < Registry._sections.length; i++) {

@@ -24,7 +24,7 @@ export class Morse {
     constructor(private wpm:number = 20, private frequency: number = 680) {
     }
 
-    public play(text:string, cb: (success: boolean) => void): void {
+    play(text:string, cb?: (success: boolean) => void): void {
       let builder = new MorseBuilder(this.wpm);
       for (let i = 0; i < text.length; i++) {
         builder.append(text[i]);
@@ -37,12 +37,14 @@ export class Morse {
         start.play(this.frequency, this.signal, (success) => {
           this.signal.stop();
           this.signal = null;
-          cb(success);
+          if (cb) {
+            cb(success);
+          }
         });
       }, 30);
     }
 
-    public cancel() {
+    cancel(): void {
       if (this.signal) {
         this.signal.stop();
       }
@@ -173,7 +175,7 @@ class Signal {
     }
   }
 
-  private setVolume(volume: number) {
+  private setVolume(volume: number): void {
     let now = Signal.ctx.currentTime;
     this.volume.gain.cancelScheduledValues(now);
     this.volume.gain.setValueAtTime(this.volume.gain.value, now);
@@ -208,7 +210,7 @@ class Tone {
     return tone;
   }
 
-  play(frequency: number, signal: Signal, onFinished: (success: boolean) => void) {
+  play(frequency: number, signal: Signal, onFinished: (success: boolean) => void): void {
     if (signal.isStopped()) {
       return;
     }
