@@ -59,9 +59,23 @@ gulp.task('default', ['copy-libs'], function() {
   .plugin(tsify)
   .bundle()
   .pipe(source('app.js'))
-  // .pipe(buffer())
-  // .pipe(sourcemaps.init({loadMaps: true}))
-  // .pipe(uglify())
-  // .pipe(sourcemaps.write('./'))
+  .pipe(gulp.dest('dist'));
+});
+
+gulp.task('release', ['copy-libs'], function() {
+  return browserify({
+    basedir: '.',
+    debug: false,
+    entries: ['src/browser.ts', 'src/morse.ts', 'src/data.ts', 'src/app.ts'],
+    cache: {},
+    packageCache: {}
+  })
+  .plugin(tsify)
+  .bundle()
+  .pipe(source('app.js'))
+  .pipe(buffer())
+  .pipe(sourcemaps.init({loadMaps: true}))
+  .pipe(uglify())
+  .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('dist'));
 });
