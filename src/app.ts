@@ -3,6 +3,7 @@
 import { visibility, keyEventToString } from './browser';
 import { Morse } from './morse';
 import { Question, QuestionFactory, Registry } from './data';
+import { Properties } from './storage';
 
 class Button {
   protected el$: JQuery;
@@ -50,6 +51,7 @@ class Settings {
   private settingsButton: Button;
   private panel$: JQuery;
   private listener: FactoryListener;
+  private level: number = 1;
 
   constructor() {
     this.settingsButton = new Button('#settings');
@@ -57,9 +59,16 @@ class Settings {
 
     this.panel$ = $('#settingsPanel');
     this.panel$.on('click', 'button', (event) => {
+      this.panel$.find('.selected').removeClass('selected');
+      $(event.target).addClass('selected');
       let level = parseFloat($(event.target).data('level'));
       this.onLevelChosen(level);
     });
+  }
+
+  restore(): void {
+    let level = Properties.getNumber('level', 1);
+    this.onLevelChosen(level);
   }
 
   onLevelSelected(listener: FactoryListener): void {
@@ -68,9 +77,11 @@ class Settings {
 
   private onLevelChosen(level: number) {
     this.panel$.hide();
+    this.level = level;
 
     let factory = Registry.getFactory(level);
-    if (this.listener) {
+    if (this.listener && factory) {
+      Properties.set('level', level);
       this.listener(factory);
     }
 
@@ -78,7 +89,7 @@ class Settings {
   }
 
   private showSettings(): void {
-    Registry.populateLevels(this.panel$);
+    Registry.populateLevels(this.panel$, this.level);
     this.panel$.show();
   }
 }
@@ -102,7 +113,6 @@ class App {
     this.settings.onLevelSelected((factory) => this.onFactoryChosen(factory));
 
     this.answers$ = $('#answers');
-    this.onFactoryChosen(Registry.initial());
 
     visibility((visible: boolean) => {
       if (!visible && this.morse) {
@@ -112,6 +122,8 @@ class App {
     });
 
     document.addEventListener('keydown', (event) => this.handleKeyEvent(event));
+
+    this.settings.restore();
   }
 
   private handleKeyEvent(event: KeyboardEvent): void {

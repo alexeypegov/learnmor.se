@@ -18,6 +18,7 @@
         "rewriteTsconfig": false
     },
     "files": [
+      "src/storage.ts",
       "src/morse.ts",
       "src/browser.ts",
       "src/data.ts",

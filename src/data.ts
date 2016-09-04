@@ -2,6 +2,8 @@ type Proc = () => void;
 
 export abstract class Question {
   protected _answered = false;
+  protected _guessed = false;
+
   private _listeners: Proc[] = [];
 
   constructor(private _question: string, private _variants: string[]) {
@@ -9,6 +11,10 @@ export abstract class Question {
 
   get answered(): boolean {
     return this._answered;
+  }
+
+  get guessed(): boolean {
+    return this._guessed;
   }
 
   get question(): string {
@@ -42,7 +48,6 @@ export abstract class Question {
 class SimpleQuestion extends Question {
   private MAX_TRY_COUNT = 2;
   private _tryCount = 0;
-  private _guessed = false;
   private parent$: JQuery;
 
   constructor(question: string, variants: string[]) {
@@ -81,14 +86,6 @@ class SimpleQuestion extends Question {
     }
   }
 
-  isGuessed(): boolean {
-    return this._guessed;
-  }
-
-  isAnswered(): boolean {
-    return this.isGuessed() || !this.hasMoreTries();
-  }
-
   hasMoreTries(): boolean {
     return this._tryCount < this.MAX_TRY_COUNT;
   }
@@ -102,7 +99,7 @@ class SimpleQuestion extends Question {
       parent$.append(button$);
 
       button$.on('click', () => {
-        if (this.isAnswered()) {
+        if (this.answered) {
           return;
         }
 
@@ -113,11 +110,35 @@ class SimpleQuestion extends Question {
 }
 
 class SequenceQuestion extends Question {
+  private parent$: JQuery;
+
+  constructor(question: string, variants: string[]) {
+    super(question, variants);
+  }
+
   answer(probe: string): void {
 
   }
 
   initUI(parent$: JQuery): void {
+    this.parent$ = parent$;
+    parent$.children().remove();
+
+    this.initInput(parent$);
+    this.initKeyboard(parent$);
+  }
+
+  private initInput(parent$: JQuery): void {
+    let input$ = $('<div class="input"></div>');
+    this.question.split('').forEach((c) => {
+      input$.append('<div class="char"></div>');
+    });
+
+    parent$.append(input$);
+  }
+
+  private initKeyboard(parent$: JQuery): void {
+
   }
 }
 
@@ -136,7 +157,7 @@ export class Registry {
     }
   }
 
-  static populateLevels(parent$: JQuery) {
+  static populateLevels(parent$: JQuery, selected: number = 1) {
     if (!parent$.children().length) {
       let level = 1;
       Registry._sections.forEach((s) => {
@@ -146,7 +167,10 @@ export class Registry {
         section$.append(levels$);
         let levels = Registry._sectionMap[s];
         levels.forEach((lvl) => {
-          levels$.append(`<button class="level" data-level="${level}">${level}</button>`);
+          let level$ = $(`<button class="level" data-level="${level}">${level}</button>`);
+          level$.toggleClass('selected', selected === level);
+          levels$.append(level$);
+
           level = level + 1;
         });
 
@@ -196,12 +220,19 @@ function randomChar(s: string): string {
   return s[Math.floor(Math.random() * s.length)];
 }
 
-function newLevel1Question(alphabet: string): Question {
+function simpleQuestion(alphabet: string): Question {
   let chars = chooseRandomly(4, alphabet);
   return new SimpleQuestion(randomChar(chars), chars.split(''));
 }
 
-Registry.register(() => { return newLevel1Question('aeimnt');  }, 'alpha');
-Registry.register(() => { return newLevel1Question('dgkorsu'); }, 'alpha');
-Registry.register(() => { return newLevel1Question('bcfhjlw'); }, 'alpha');
-Registry.register(() => { return newLevel1Question('pqvxyz');  }, 'alpha');
+function sequenceQuestion(alphabet: string, numOfKeys: number, numOfChars: number): Question {
+  let variants = chooseRandomly(numOfKeys, alphabet);
+  let question = chooseRandomly(numOfChars, variants);
+  return new SequenceQuestion(question, variants.split(''));
+}
+
+Registry.register(() => { return simpleQuestion('aeimnt');  }, 'alpha');
+Registry.register(() => { return simpleQuestion('dgkorsu'); }, 'alpha');
+// Registry.register(() => { return sequenceQuestion('aeimntdgkorsu', 8, 2) }, 'alpha');
+Registry.register(() => { return simpleQuestion('bcfhjlw'); }, 'alpha');
+Registry.register(() => { return simpleQuestion('pqvxyz');  }, 'alpha');

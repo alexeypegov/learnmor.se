@@ -1,3 +1,5 @@
+@fontName: 'Helvetica', sans-serif;
+
 body, html {
   height: 100%;
 }
@@ -14,7 +16,7 @@ button {
 }
 
 #header {
-  font-family: 'Helvetica', sans-serif;
+  font-family: @fontName;
   text-align: center;
   padding-top: 40px;
   color: #666;
@@ -43,10 +45,10 @@ button {
   background-image: url('../img/play.svg');
   background-size: 100px 100px;
   background-color: transparent;
-}
 
-#play.replay {
-  background-image: url('../img/replay.svg');
+  .replay {
+    background-image: url('../img/replay.svg');
+  }
 }
 
 #settings {
@@ -63,7 +65,7 @@ button {
   margin-top: -25px;
   border-radius: 50px;
   font-size: 20px;
-  font-family: "Helvetica", sans-serif;
+  font-family: @fontName;
   background-color: transparent;
   border: 3px solid #000;
   color: #000;
@@ -87,27 +89,33 @@ button {
 #answers {
   display: flex;
   justify-content: space-around;
-}
 
-#answers button {
-  width: 70px;
-  height: 70px;
-  color: black;
-  font-family: 'Helvetica', sans-serif;
-  font-size: 20px;
-  border-radius: 100px;
-  background-color: #eee;
-  text-transform: uppercase;
-}
+  button {
+    width: 70px;
+    height: 70px;
+    color: black;
+    font-family: @fontName;
+    font-size: 20px;
+    border-radius: 100px;
+    background-color: #eee;
+    text-transform: uppercase;
 
-#answers button.correct {
-  background-color: #5cb85c;
-  color: #fff;
-}
+    .correct {
+      background-color: #5cb85c;
+      color: #fff;
+    }
 
-#answers button.wrong {
-  background-color: #d9534f;
-  color: #fff;
+    .wrong {
+      background-color: #d9534f;
+      color: #fff;
+    }
+  }
+
+  .input {
+    .char {
+      border-bottom: 2px solid black;
+    }
+  }
 }
 
 #settingsPanel {
@@ -118,35 +126,42 @@ button {
   width: 100%;
   padding-top: 100px;
   background-color: #fff;
-}
 
-#settingsPanel button {
-  box-sizing: border-box;
-  line-height: 70px;
-  width: 70px;
-  height: 70px;
-  font-family: "Helvetica", sans-serif;
-  font-size: 20px;
-  border-radius: 100px;
-  border: 2px solid #000;
-  color: #000;
-  background-color: #fff;
-  line-height: 70px;
-}
+  button {
+    box-sizing: border-box;
+    line-height: 70px;
+    width: 70px;
+    height: 70px;
+    font-family: @fontName;
+    font-size: 20px;
+    border-radius: 100px;
+    border: 2px solid #000;
+    color: #000;
+    background-color: #fff;
+    line-height: 70px;
 
-#settingsPanel .section .levels {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: nowrap;
-}
+    &.selected {
+      background-color: #FFD34E;
+      // color: #999;
+    }
+  }
 
-#settingsPanel .section .title {
-  font-family: "Helvetica", sans-serif;
-  text-transform: capitalize;
-  border-bottom: 1px solid #bbb;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  color: #555;
-  font-size: 20px;
-  text-align: center;
+  .section {
+    .levels {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: nowrap;
+    }
+
+    .title {
+      font-family: @fontName;
+      text-transform: capitalize;
+      border-bottom: 1px solid #bbb;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      color: #555;
+      font-size: 20px;
+      text-align: center;
+    }
+  }
 }

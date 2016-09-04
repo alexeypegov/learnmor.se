@@ -10,6 +10,7 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var buffer = require('vinyl-buffer');
 var clean = require('gulp-clean');
+var less = require('gulp-less');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -31,11 +32,12 @@ gulp.task('clean', function () {
   return gulp.src('dist/**/*', {read: false}).pipe(clean());
 });
 
-gulp.task('copy-css', ['clean'], function() {
-  return gulp.src(['css/desktop.css', 'css/master.css']).pipe(gulp.dest('dist/css'));
+// todo: minimize
+gulp.task('build-css', ['clean'], function() {
+  return gulp.src('css/**/*').pipe(less()).pipe(gulp.dest('dist/css'));
 });
 
-gulp.task('copy-img', ['copy-css'], function() {
+gulp.task('copy-img', ['build-css'], function() {
   return gulp.src(['img/play.svg', 'img/replay.svg', 'img/forward.svg']).pipe(gulp.dest('dist/img'));
 });
 
