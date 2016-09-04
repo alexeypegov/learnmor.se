@@ -41,7 +41,7 @@ class PlayButton extends Button {
     super('#play');
   }
 
-  toggleReplay(replay: boolean): void {
+  set replay(replay: boolean) {
     this.el$.toggleClass('replay', replay);
   }
 }
@@ -172,7 +172,7 @@ class App {
 
     this.previousQuestion = this.question;
     this.question = null;
-    this.playButton.toggleReplay(false);
+    this.playButton.replay = false;
     this.repeatButton.visible = true;
   }
 
@@ -183,13 +183,13 @@ class App {
 
     this.question = null;
     this.factory = factory;
-    this.playButton.toggleReplay(false);
+    this.playButton.replay = false;
   }
 
   private initButtons(): void {
     this.playButton = new PlayButton();
     this.playButton.onClick(() => {
-      this.playButton.toggleReplay(true);
+      this.playButton.replay = true;
       this.play();
     });
 

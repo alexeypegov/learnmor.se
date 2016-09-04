@@ -21,6 +21,7 @@ button {
   padding-top: 40px;
   color: #666;
   font-size: 120%;
+  display: none;
 }
 
 #content {
@@ -30,7 +31,7 @@ button {
 
 #controls {
   position: relative;
-  height: 200px;
+  height: 150px;
 }
 
 #play {
@@ -46,7 +47,7 @@ button {
   background-size: 100px 100px;
   background-color: transparent;
 
-  .replay {
+  &.replay {
     background-image: url('../img/replay.svg');
   }
 }
@@ -60,7 +61,7 @@ button {
   vertical-align: middle;
   top: 50%;
   left: 25%;
-  left: calc(25% - 20px);
+  // left: calc(25% - 20px);
   margin-left: -25px;
   margin-top: -25px;
   border-radius: 50px;
@@ -76,7 +77,7 @@ button {
   position: absolute;
   top: 50%;
   left: 75%;
-  left: calc(75% + 20px);
+  // left: calc(75% + 20px);
   margin-left: -25px;
   margin-top: -25px;
   width: 50px;
@@ -87,9 +88,6 @@ button {
 }
 
 #answers {
-  display: flex;
-  justify-content: space-around;
-
   button {
     width: 70px;
     height: 70px;
@@ -111,9 +109,79 @@ button {
     }
   }
 
+  .keyboard {
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+    align-content: center;
+    align-items: center;
+
+    .key {
+      box-sizing: border-box;
+      width: 70px;
+      height: 70px;
+      margin: 10px;
+      color: black;
+      font-family: @fontName;
+      font-size: 20px;
+      border-radius: 100px;
+      background-color: #eee;
+      text-transform: uppercase;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 70px;
+
+      &:active {
+        background-color: #bbb;
+      }
+    }
+  }
+
   .input {
+    font-family: @fontName;
+    text-align: center;
+    margin: 0 0 30px 0;
+
+    .char ~ .char {
+      margin-left: .3em;
+    }
+
     .char {
-      border-bottom: 2px solid black;
+      display: inline-block;
+      position: relative;
+      font-size: 60px;
+      width: 1em;
+      height: 1em;
+      border-bottom: 2px solid #666;
+      background-color: #f5f5f5;
+      text-align: center;
+      text-transform: uppercase;
+
+      &.correct {
+        color: #5cb85c;
+      }
+
+      &[data-correct]:after {
+        content: attr(data-correct);
+        position: absolute;
+        top: -.5em;
+        right: -.5em;
+        font-size: 30px;
+        width: 1.3em;
+        height: 1.3em;
+        line-height: 1.3em;
+        background-color: #5cb85c;
+        color: #fff;
+        border-radius: 20px;
+      }
+    }
+
+    &.correct {
+      color: #5cb85c;
+    }
+
+    &.wrong {
+      color: #d9534f;
     }
   }
 }
@@ -132,6 +200,7 @@ button {
     line-height: 70px;
     width: 70px;
     height: 70px;
+    margin: 10px;
     font-family: @fontName;
     font-size: 20px;
     border-radius: 100px;
@@ -142,7 +211,6 @@ button {
 
     &.selected {
       background-color: #FFD34E;
-      // color: #999;
     }
   }
 
@@ -150,7 +218,8 @@ button {
     .levels {
       display: flex;
       justify-content: space-around;
-      flex-wrap: nowrap;
+      flex-flow: row wrap;
+      justify-content: center;
     }
 
     .title {
