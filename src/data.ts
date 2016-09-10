@@ -99,7 +99,7 @@ class SequenceQuestion extends Question {
         char$.text(this.buffer[i]);
         char$.data('value', this.buffer[i]);
       } else {
-        char$.html('&middot;');
+        char$.html('&nbsp;');
         char$.data('value', null);
       }
     });
@@ -135,7 +135,7 @@ class SequenceQuestion extends Question {
   private initInput(parent$: JQuery): void {
     let input$ = $('<div class="input"></div>');
     this.question.split('').forEach((c) => {
-      input$.append('<div class="char">&middot;</div>');
+      input$.append('<div class="char">&nbsp;</div>');
     });
 
     parent$.append(input$);

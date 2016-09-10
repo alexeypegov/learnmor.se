@@ -1,8 +1,7 @@
-@fontName: 'Helvetica', sans-serif;
-
 body, html {
   height: 100%;
   -webkit-tap-highlight-color: transparent;
+  font-family: "-apple-system", "HelveticaNeue", "Droid Sans", sans-serif;
 }
 
 body {
@@ -17,7 +16,6 @@ button {
 }
 
 #header {
-  font-family: @fontName;
   text-align: center;
   padding-top: 40px;
   color: #666;
@@ -65,7 +63,6 @@ button {
   margin-top: -25px;
   border-radius: 50px;
   font-size: 20px;
-  font-family: @fontName;
   background-color: transparent;
   border: 3px solid #000;
   color: #000;
@@ -90,7 +87,6 @@ button {
     width: 70px;
     height: 70px;
     color: black;
-    font-family: @fontName;
     font-size: 20px;
     border-radius: 100px;
     background-color: #eee;
@@ -120,7 +116,6 @@ button {
       height: 50px;
       margin: 10px;
       color: black;
-      font-family: @fontName;
       font-size: 20px;
       border-radius: 50px;
       background-color: #eee;
@@ -136,9 +131,8 @@ button {
   }
 
   .input {
-    font-family: @fontName;
     text-align: center;
-    margin: 0 0 30px 0;
+    margin: 0 0 20px 0;
 
     .char ~ .char {
       margin-left: .3em;
@@ -147,7 +141,8 @@ button {
     .char {
       display: inline-block;
       position: relative;
-      font-size: 60px;
+      font-size: 50px;
+      line-height: 50px;
       width: 1em;
       height: 1em;
       border-bottom: 2px solid #666;
@@ -164,13 +159,13 @@ button {
         position: absolute;
         top: -.5em;
         right: -.5em;
-        font-size: 30px;
-        width: 1.3em;
-        height: 1.3em;
-        line-height: 1.3em;
+        font-size: 20px;
+        width: 1em;
+        height: 1em;
+        line-height: 1em;
         background-color: #5cb85c;
         color: #fff;
-        border-radius: 20px;
+        border-radius: 2px;
       }
     }
 
@@ -195,17 +190,14 @@ button {
 
   button {
     box-sizing: border-box;
-    line-height: 70px;
-    width: 70px;
-    height: 70px;
-    margin: 10px;
-    font-family: @fontName;
+    width: 50px;
+    height: 50px;
+    margin: 5px;
     font-size: 20px;
-    border-radius: 100px;
-    border: 2px solid #000;
+    border-radius: 50px;
     color: #000;
-    background-color: #fff;
-    line-height: 70px;
+    background-color: #eee;
+    line-height: 50px;
 
     &.selected {
       background-color: #FFD34E;
@@ -221,7 +213,6 @@ button {
     }
 
     .title {
-      font-family: @fontName;
       text-transform: capitalize;
       border-bottom: 1px solid #bbb;
       padding-bottom: 10px;
