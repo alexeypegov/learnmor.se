@@ -11,7 +11,7 @@ export abstract class Question {
   constructor(private _question: string, private _variants: string[]) {
   }
 
-  protected hasMoreTries(): boolean {
+  hasMoreTries(): boolean {
     return this._tryCount < this.MAX_TRY_COUNT;
   }
 
@@ -219,32 +219,84 @@ export class Registry {
   }
 }
 
-function chooseRandomly(howMany: number, chars: string): string {
-  let result: string[] = [];
-  while (result.length < howMany) {
-    let ndx = Math.floor(Math.random() * chars.length);
-    let probe = chars[ndx];
-    if (result.indexOf(probe) === -1) {
-      result.push(probe);
+export class QuestionChooser {
+  private answerMap: {[key: string]: number} = {};
+  constructor(private alphabet: string, private numOfChars: number, private numOfKeys: number) {
+    for (let i = 0; i < alphabet.length; i++) {
+      this.answerMap[alphabet[i]] = 0;
     }
   }
 
-  return result.join('');
+  answer(question: string, points: number): void {
+    if (points === 0) return;
+
+    for(let i = 0; i < question.length; i++) {
+      this.answerMap[question[i]] = this.answerMap[question[i]] + points;
+    }
+  }
+
+  // https://en.wikipedia.org/wiki/Rejection_sampling
+  generateNewQuestion(): Question {
+    let result = '';
+    for (let i = 0; i < this.numOfChars; i++) {
+      while(true) {
+        let [c, x] = this.probe();
+        let char = this.alphabet[c];
+        if (this.answerMap[char] <= x) {
+          console.log('OK');
+          result += char;
+          break;
+        }
+
+        if (result.length === this.numOfChars) {
+          break;
+        }
+      }
+    }
+
+    let question = new SequenceQuestion(result, this.buildKeys(result, this.numOfKeys));
+    question.onAnswered(() => this.answer(question.question, question.guessed ? question.hasMoreTries() ? 2 : 1 : 0));
+
+    return question;
+  }
+
+  private probe(): [number, number] {
+    let n = this.alphabet.length;
+    let vals = Object.keys(this.answerMap).map((k) => this.answerMap[k]);
+    let max = Math.max.apply(null, vals);
+    let min = Math.min.apply(null, vals);
+    return [QuestionChooser.rand(0, n), QuestionChooser.rand(min, max + 1)];
+  }
+
+  private buildKeys(question: string, numOfKeys: number): string[] {
+    let variants = question;
+    while (true) {
+      if (variants.length === numOfKeys) {
+        break;
+      }
+
+      let probe = this.alphabet[QuestionChooser.rand(0, this.alphabet.length)];
+      if (variants.indexOf(probe) === -1) {
+        variants = variants += probe;
+      }
+    }
+
+    return variants.split('').sort();
+  }
+
+  private static rand(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
 }
 
-function randomChar(s: string): string {
-  return s[Math.floor(Math.random() * s.length)];
+function sequenceQuestion(alphabet: string, numOfChars: number, numOfKeys: number): () => Question {
+  let chooser = new QuestionChooser(alphabet, numOfChars, numOfKeys);
+  return () => chooser.generateNewQuestion();
 }
 
-function sequenceQuestion(alphabet: string, numOfKeys: number, numOfChars: number): Question {
-  let variants = chooseRandomly(numOfKeys, alphabet);
-  let question = chooseRandomly(numOfChars, variants);
-  return new SequenceQuestion(question, variants.split(''));
-}
-
-Registry.register(() => { return sequenceQuestion('aeimnt', 4, 1);  }, 'alpha');
-Registry.register(() => { return sequenceQuestion('dgkorsu', 4, 1); }, 'alpha');
-Registry.register(() => { return sequenceQuestion('aeimntdgkorsu', 8, 3) }, 'alpha');
-Registry.register(() => { return sequenceQuestion('bcfhjlw', 4, 1); }, 'alpha');
-Registry.register(() => { return sequenceQuestion('pqvxyz', 4, 1);  }, 'alpha');
-Registry.register(() => { return sequenceQuestion('bcfhjlwpqvxyz', 8, 3);  }, 'alpha');
+Registry.register(sequenceQuestion('aeimnt', 1, 4), 'alpha');
+Registry.register(sequenceQuestion('dgkorsu', 1, 4), 'alpha');
+Registry.register(sequenceQuestion('aeimntdgkorsu', 3, 8), 'alpha');
+Registry.register(sequenceQuestion('bcfhjlw', 1, 4), 'alpha');
+Registry.register(sequenceQuestion('pqvxyz', 1, 4), 'alpha');
+Registry.register(sequenceQuestion('bcfhjlwpqvxyz', 3, 8), 'alpha');
