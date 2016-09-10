@@ -2,6 +2,7 @@
 
 body, html {
   height: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -21,7 +22,6 @@ button {
   padding-top: 40px;
   color: #666;
   font-size: 120%;
-  display: none;
 }
 
 #content {
@@ -60,8 +60,7 @@ button {
   text-align: center;
   vertical-align: middle;
   top: 50%;
-  left: 25%;
-  // left: calc(25% - 20px);
+  left: 20%;
   margin-left: -25px;
   margin-top: -25px;
   border-radius: 50px;
@@ -76,8 +75,7 @@ button {
   display: block;
   position: absolute;
   top: 50%;
-  left: 75%;
-  // left: calc(75% + 20px);
+  left: 80%;
   margin-left: -25px;
   margin-top: -25px;
   width: 50px;
@@ -118,18 +116,18 @@ button {
 
     .key {
       box-sizing: border-box;
-      width: 70px;
-      height: 70px;
+      width: 50px;
+      height: 50px;
       margin: 10px;
       color: black;
       font-family: @fontName;
       font-size: 20px;
-      border-radius: 100px;
+      border-radius: 50px;
       background-color: #eee;
       text-transform: uppercase;
       text-align: center;
       vertical-align: middle;
-      line-height: 70px;
+      line-height: 50px;
 
       &:active {
         background-color: #bbb;

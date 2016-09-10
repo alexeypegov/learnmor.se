@@ -38,7 +38,7 @@ gulp.task('build-css', ['clean'], function() {
 });
 
 gulp.task('copy-img', ['build-css'], function() {
-  return gulp.src(['img/play.svg', 'img/replay.svg', 'img/forward.svg']).pipe(gulp.dest('dist/img'));
+  return gulp.src('img/**/*.svg').pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('copy-html', ['copy-img'], function() {
@@ -46,7 +46,7 @@ gulp.task('copy-html', ['copy-img'], function() {
 });
 
 gulp.task('copy-libs', ['copy-html'], function() {
-  return gulp.src(['lib/jquery-3.1.0.slim.min.js']).pipe(gulp.dest('dist'));
+  return gulp.src('lib/**/*.js').pipe(gulp.dest('dist'));
 });
 
 // todo: call clean synchronyously
