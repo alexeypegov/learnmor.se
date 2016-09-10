@@ -115,7 +115,8 @@ class MorseBuilder {
 
         let tone = this.createTone(toneChar === this.DASH ? ToneType.DASH : ToneType.DOT);
         if (!this.start) {
-          this.start = tone;
+          this.start = this.createTone(ToneType.LETTER_SEP);
+          this.start.append(tone);
         }
 
         if (this.current) {
@@ -134,6 +135,7 @@ class MorseBuilder {
   }
 
   build(): Tone {
+    this.current.append(this.createTone(ToneType.LETTER_SEP)); // do not drop the mic
     return this.start;
   }
 
