@@ -18,6 +18,9 @@ const ALPHABET = {
   ' ': ' ' /* space */
 };
 
+const SPACE = ' ';
+const DASH = '-';
+
 export class Morse {
     private signal: Signal;
 
@@ -56,13 +59,10 @@ enum ToneType {
 }
 
 class MorseBuilder {
-  SPACE = ' ';
-  DASH = '-';
-
-  dotDuration: number;
-  start: Tone;
-  current: Tone;
-  prevChar: string;
+  private dotDuration: number;
+  private start: Tone;
+  private current: Tone;
+  private prevChar: string;
 
   constructor(wpm: number) {
     this.dotDuration = MorseBuilder.getDotDuration(wpm);
@@ -104,16 +104,16 @@ class MorseBuilder {
       throw Error(`Unknown char: "${char}!"`);
     }
 
-    if (toneSeq === this.SPACE) {
+    if (toneSeq === SPACE) {
       this.current = this.current.append(this.createTone(ToneType.WORD_SEP));
     } else {
       for (let i = 0; i < toneSeq.length; i++) {
         let toneChar = toneSeq[i];
-        if (this.prevChar && this.prevChar !== this.SPACE) {
+        if (this.prevChar && this.prevChar !== SPACE) {
           this.current = this.current.append(this.createTone(ToneType.LETTER_SEP));
         }
 
-        let tone = this.createTone(toneChar === this.DASH ? ToneType.DASH : ToneType.DOT);
+        let tone = this.createTone(toneChar === DASH ? ToneType.DASH : ToneType.DOT);
         if (!this.start) {
           this.start = this.createTone(ToneType.LETTER_SEP);
           this.start.append(tone);
@@ -139,7 +139,7 @@ class MorseBuilder {
     return this.start;
   }
 
-  static getDotDuration(wpm: number) {
+  private static getDotDuration(wpm: number): number {
     return Math.round(60 / (wpm * WPM_CODEX_DOTS) * 1000);
   }
 }
@@ -166,7 +166,7 @@ class Signal {
     this.oscillator.start();
   }
 
-  isStopped(): boolean {
+  get stopped(): boolean {
     return this._stopped;
   }
 
@@ -192,7 +192,7 @@ class Signal {
   }
 
   stop(): void {
-    if (this.isStopped()) {
+    if (this.stopped) {
       return;
     }
 
@@ -203,7 +203,7 @@ class Signal {
 }
 
 class Tone {
-  next: Tone;
+  private next: Tone;
 
   constructor(private duration: number, private silent: boolean = false) {}
 
@@ -213,7 +213,7 @@ class Tone {
   }
 
   play(frequency: number, signal: Signal, onFinished: (success: boolean) => void): void {
-    if (signal.isStopped()) {
+    if (signal.stopped) {
       return;
     }
 

@@ -164,7 +164,7 @@ export class Registry {
   private static _sections: string[] = [];
   private static _sectionMap: {[key: string]: QuestionFactory[]} = {};
 
-  static register(factory: QuestionFactory, section: string) {
+  static register(factory: QuestionFactory, section: string): void {
     if (!Registry._sectionMap.hasOwnProperty(section)) {
       Registry._sections.push(section);
       Registry._sectionMap[section] = [factory];
@@ -173,7 +173,7 @@ export class Registry {
     }
   }
 
-  static populateLevels(parent$: JQuery, selected: number = 1) {
+  static populateLevels(parent$: JQuery, selected: number = 1): void {
     if (!parent$.children().length) {
       let level = 1;
       Registry._sections.forEach((s) => {

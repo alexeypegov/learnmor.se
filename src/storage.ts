@@ -1,4 +1,3 @@
-
 class MockStorage extends Storage {
   getItem(key: string): string {
     return null;
