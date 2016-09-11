@@ -242,8 +242,7 @@ export class QuestionChooser {
       while(true) {
         let [c, x] = this.probe();
         let char = this.alphabet[c];
-        if (this.answerMap[char] <= x) {
-          console.log('OK');
+        if (this.answerMap[char] <= x && result.indexOf(char) === -1) {
           result += char;
           break;
         }
@@ -277,7 +276,7 @@ export class QuestionChooser {
 
       let probe = this.alphabet[QuestionChooser.rand(0, this.alphabet.length)];
       if (variants.indexOf(probe) === -1) {
-        variants = variants += probe;
+        variants = variants + probe;
       }
     }
 
