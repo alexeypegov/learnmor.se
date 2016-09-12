@@ -35,7 +35,7 @@ export class WavGen {
   }
 
   static get supported(): boolean {
-    return typeof btoa === 'function';
+    return typeof btoa === 'function' && document.location.search.indexOf('wav') >= 0;
   }
 
   append(duration: number, silence = false): WavGen {
