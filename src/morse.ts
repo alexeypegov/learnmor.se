@@ -1,5 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
+import { WavGen } from './wav';
+
 const WPM_PARIS_DOTS = 50;
 const WPM_CODEX_DOTS = 60;
 
@@ -21,37 +23,70 @@ const ALPHABET = {
 const SPACE = ' ';
 const DASH = '-';
 
-export class Morse {
-    private signal: Signal;
+export abstract class MorsePlayer {
+  constructor() {}
 
-    constructor(private wpm:number = 20, private frequency: number = 680) {
+  abstract play(cb?: (success: boolean) => void): void;
+
+  cancel(): void {}
+
+  static create(text: string, wpm = 20, frequency = 680): MorsePlayer {
+    let builder = new MorseBuilder(wpm);
+    for (let i = 0; i < text.length; i++) {
+      builder.append(text[i]);
     }
 
-    play(text:string, cb?: (success: boolean) => void): void {
-      let builder = new MorseBuilder(this.wpm);
-      for (let i = 0; i < text.length; i++) {
-        builder.append(text[i]);
-      }
+    let start = builder.build();
+    let player = WavGen.supported ? new WavPlayer(frequency, start) : new WebAudioApiPlayer(frequency, start);
+    return player;
+  }
+}
 
-      let start = builder.build();
+class WebAudioApiPlayer extends MorsePlayer {
+  private signal: Signal;
 
-      this.signal = new Signal(680);
-      setTimeout(() => {
-        start.play(this.frequency, this.signal, (success) => {
-          this.signal.stop();
-          this.signal = null;
-          if (cb) {
-            cb(success);
-          }
-        });
-      }, 30);
-    }
+  constructor(private frequency: number, private start: Tone) {
+    super();
+  }
 
-    cancel(): void {
-      if (this.signal) {
+  play(cb?: (success: boolean) => void): void {
+    this.signal = new Signal(680);
+    setTimeout(() => {
+      this.start.play(this.frequency, this.signal, (success) => {
         this.signal.stop();
-      }
+        this.signal = null;
+        cb && cb(success);
+      });
+    }, 30);
+  }
+
+  cancel(): void {
+    this.signal && this.signal.stop();
+  }
+}
+
+class WavPlayer extends MorsePlayer {
+  private audio: any; // oopsie
+
+  constructor(frequency: number, start: Tone) {
+    super();
+
+    let wav = new WavGen(frequency);
+
+    let tone = start;
+    while (true) {
+      wav.append(tone.duration, tone.silent);
+      tone = tone.next;
+      if (!tone) break;
     }
+
+    this.audio  = new Audio(wav.build());
+  }
+
+  play(cb?: (success: boolean) => void): void {
+    cb && this.audio.addEventListener('ended', () => cb(true));
+    this.audio.play();
+  }
 }
 
 enum ToneType {
@@ -203,13 +238,17 @@ class Signal {
 }
 
 class Tone {
-  private next: Tone;
+  private _next: Tone;
 
-  constructor(private duration: number, private silent: boolean = false) {}
+  constructor(public duration: number, public silent: boolean = false) {}
 
   append(tone: Tone): Tone {
-    this.next = tone;
+    this._next = tone;
     return tone;
+  }
+
+  get next(): Tone {
+    return this._next;
   }
 
   play(frequency: number, signal: Signal, onFinished: (success: boolean) => void): void {

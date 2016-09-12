@@ -295,7 +295,7 @@ function sequenceQuestion(alphabet: string, numOfChars: number, numOfKeys: numbe
 
 Registry.register(sequenceQuestion('aeimnt', 1, 4), 'alpha');
 Registry.register(sequenceQuestion('dgkorsu', 1, 4), 'alpha');
-Registry.register(sequenceQuestion('aeimntdgkorsu', 3, 8), 'alpha');
+Registry.register(sequenceQuestion('aeimntdgkorsu', 2, 8), 'alpha');
 Registry.register(sequenceQuestion('bcfhjlw', 1, 4), 'alpha');
 Registry.register(sequenceQuestion('pqvxyz', 1, 4), 'alpha');
-Registry.register(sequenceQuestion('bcfhjlwpqvxyz', 3, 8), 'alpha');
+Registry.register(sequenceQuestion('bcfhjlwpqvxyz', 2, 8), 'alpha');

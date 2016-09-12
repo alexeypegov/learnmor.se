@@ -1,7 +1,7 @@
 /// <reference path="../typings/globals/jquery/index.d.ts" />
 
 import { visibility, keyEventToString } from './browser';
-import { Morse } from './morse';
+import { MorsePlayer } from './morse';
 import { Question, QuestionFactory, Registry } from './data';
 import { Properties } from './storage';
 
@@ -98,11 +98,11 @@ class App {
   private playButton: PlayButton;
   private repeatButton: Button;
   private question: Question;
-  private previousQuestion: Question;
   private factory: QuestionFactory;
   private answers$: JQuery;
   private settings: Settings;
-  private morse: Morse;
+  private player: MorsePlayer;
+  private previousPlayer: MorsePlayer;
 
   private locked: boolean = false;
 
@@ -115,14 +115,14 @@ class App {
     this.answers$ = $('#answers');
 
     visibility((visible: boolean) => {
-      if (!visible && this.morse) {
-        this.morse.cancel();
+      if (!visible) {
+        this.player && this.player.cancel();
+        this.previousPlayer && this.previousPlayer.cancel();
         this.locked = false;
       }
     });
 
     document.addEventListener('keydown', (event) => this.handleKeyEvent(event));
-
     this.settings.restore();
   }
 
@@ -146,10 +146,14 @@ class App {
 
     this.repeatButton.visible = false;
     this.locked = true;
-    let question = this.getQuestion();
-    this.morse = new Morse();
-    this.morse.play(question.question, (success) => {
-      this.morse = null;
+
+    if (!this.question) {
+      let question = this.getQuestion();
+      this.player && this.player.cancel();
+      this.player = MorsePlayer.create(question.question);
+    }
+
+    this.player.play((success) => {
       this.locked = false;
     });
   }
@@ -170,16 +174,14 @@ class App {
       // this.question.deinitUI(this.answers$);
     // }
 
-    this.previousQuestion = this.question;
+    this.previousPlayer = this.player;
     this.question = null;
     this.playButton.replay = false;
     this.repeatButton.visible = true;
   }
 
   onFactoryChosen(factory: QuestionFactory): void {
-    if (this.question) {
-      this.question.deinitUI(this.answers$);
-    }
+    this.question && this.question.deinitUI(this.answers$);
 
     this.question = null;
     this.factory = factory;
@@ -195,9 +197,7 @@ class App {
 
     this.repeatButton = new Button('#repeat');
     this.repeatButton.onClick(() => {
-      if (this.previousQuestion) {
-        new Morse().play(this.previousQuestion.question);
-      }
+      this.previousPlayer && this.previousPlayer.play();
     });
   }
 }
