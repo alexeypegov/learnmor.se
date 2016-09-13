@@ -2,9 +2,6 @@
 
 import { WavGen } from './wav';
 
-const WPM_PARIS_DOTS = 50;
-const WPM_CODEX_DOTS = 60;
-
 const ALPHABET = {
   'a': '.-', 'b': '-...', 'c': '-.-.', 'd': '-..', 'e': '.', 'f': '..-.', 'g': '--.', 'h': '....',
   'i': '..', 'j': '.---', 'k': '-.-', 'l': '.-..', 'm': '--', 'n': '-.', 'o': '---', 'p': '.--.',
@@ -175,7 +172,7 @@ class MorseBuilder {
   }
 
   private static getDotDuration(wpm: number): number {
-    return Math.round(60 / (wpm * WPM_CODEX_DOTS) * 1000);
+    return Math.round(1200 / wpm);
   }
 }
 
