@@ -11,6 +11,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var buffer = require('vinyl-buffer');
 var clean = require('gulp-clean');
 var less = require('gulp-less');
+var uncache = require('gulp-uncache');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -42,7 +43,7 @@ gulp.task('copy-img', ['build-css'], function() {
 });
 
 gulp.task('copy-html', ['copy-img'], function() {
-  return gulp.src(paths.pages).pipe(gulp.dest('dist'));
+  return gulp.src(paths.pages).pipe(uncache()).pipe(gulp.dest('dist'));
 });
 
 gulp.task('copy-libs', ['copy-html'], function() {
