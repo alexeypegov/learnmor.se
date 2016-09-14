@@ -46,7 +46,7 @@ export class WavGen {
   }
 
   static get supported(): boolean {
-    return typeof btoa === 'function' /*&& document.location.search.indexOf('wav') >= 0*/;
+    return typeof btoa === 'function' && document.location.search.indexOf('html5') < 0;
   }
 
   append(duration: number, silence = false): WavGen {
