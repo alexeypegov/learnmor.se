@@ -11,9 +11,20 @@ class Pcm {
     if (silence) {
       this._data = this._data.concat(Array.apply(null, Array(samples)).map(Number.prototype.valueOf,0));
     } else {
+      const coeff = 2 * Math.PI;
       let temp: number[] = [];
       for (let i = 0; i < samples; i++) {
-        temp.push(Math.sin(2 * Math.PI * i / cycle));
+        temp.push(Math.sin(coeff * i / cycle));
+      }
+
+      // smooth tone
+      let c: number;
+      for (let i = 0; i < Math.min(200, samples); i++) {
+        c = i * 100/20000;
+        temp[i] = temp[i] * c;
+
+        let endNdx = samples - i - 1;
+        temp[endNdx] = temp[endNdx] * c;
       }
 
       this._data = this._data.concat(temp);
@@ -35,7 +46,7 @@ export class WavGen {
   }
 
   static get supported(): boolean {
-    return typeof btoa === 'function' && document.location.search.indexOf('wav') >= 0;
+    return typeof btoa === 'function' /*&& document.location.search.indexOf('wav') >= 0*/;
   }
 
   append(duration: number, silence = false): WavGen {
