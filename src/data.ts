@@ -149,7 +149,7 @@ class SequenceQuestion extends Question {
 
     keyboard$.on('click', '.key', (event) => {
       let key$ = $(event.target);
-      let key = key$.data('value');
+      let key = '' + key$.data('value');
 
       this.answer(key);
     });
@@ -176,6 +176,8 @@ export class Registry {
   static populateLevels(parent$: JQuery, selected: number = 1): void {
     if (!parent$.children().length) {
       let level = 1;
+      parent$.append('<div class="header">Levels</div>');
+
       Registry._sections.forEach((s) => {
         let section$ = $('<div class="section"></div>');
         section$.append(`<div class="title">${s}</div>`);
@@ -293,9 +295,20 @@ function sequenceQuestion(alphabet: string, numOfChars: number, numOfKeys: numbe
   return () => chooser.generateNewQuestion();
 }
 
-Registry.register(sequenceQuestion('aeimnt', 1, 4), 'alpha');
-Registry.register(sequenceQuestion('dgkorsu', 1, 4), 'alpha');
-Registry.register(sequenceQuestion('aeimntdgkorsu', 2, 8), 'alpha');
-Registry.register(sequenceQuestion('bcfhjlw', 1, 4), 'alpha');
-Registry.register(sequenceQuestion('pqvxyz', 1, 4), 'alpha');
-Registry.register(sequenceQuestion('bcfhjlwpqvxyz', 2, 8), 'alpha');
+Registry.register(sequenceQuestion('aeimnt', 1, 4), 'alpha 1');
+Registry.register(sequenceQuestion('dgkorsu', 1, 4), 'alpha 1');
+Registry.register(sequenceQuestion('aeimntdgkorsu', 2, 8), 'alpha 1');
+
+Registry.register(sequenceQuestion('bcfhjlw', 1, 4), 'alpha 2');
+Registry.register(sequenceQuestion('pqvxyz', 1, 4), 'alpha 2');
+Registry.register(sequenceQuestion('bcfhjlwpqvxyz', 2, 8), 'alpha 2');
+
+Registry.register(sequenceQuestion('aeimntdgkorsubcfhjlwpqvxyz', 2, 8), 'alpha 3');
+Registry.register(sequenceQuestion('aeimntdgkorsubcfhjlwpqvxyz', 3, 8), 'alpha 3');
+
+Registry.register(sequenceQuestion('01234', 1, 4), 'digits');
+Registry.register(sequenceQuestion('56789', 1, 4), 'digits');
+Registry.register(sequenceQuestion('123456789', 2, 8), 'digits');
+
+Registry.register(sequenceQuestion('0123456789aeimntdgkorsubcfhjlwpqvxyz', 2, 8), 'alpha & digits');
+Registry.register(sequenceQuestion('0123456789aeimntdgkorsubcfhjlwpqvxyz', 4, 12), 'alpha & digits');
