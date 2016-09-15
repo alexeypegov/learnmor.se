@@ -12,22 +12,13 @@ var buffer = require('vinyl-buffer');
 var clean = require('gulp-clean');
 var less = require('gulp-less');
 var uncache = require('gulp-uncache');
+var bb = require('bitballoon');
 
 var tsProject = ts.createProject('tsconfig.json');
 
 var paths = {
   pages: ['src/index.html']
 };
-
-// gulp.task('deploy', ['default'], function() {
-//   bb.deploy({
-//     access_token: process.env.BB_ACCESS_TOKEN,
-//     site_id: 'learnmor.se',
-//     dir: 'dist'
-//   }, function(err, deploy) {
-//     if (err) throw err;
-//   })
-// });
 
 gulp.task('clean', function () {
   return gulp.src('dist/**/*', {read: false}).pipe(clean());
@@ -81,4 +72,14 @@ gulp.task('release', ['copy-libs'], function() {
   .pipe(uglify())
   .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('dist'));
+});
+
+gulp.task('deploy', ['release'], function() {
+  bb.deploy({
+   access_token: process.env.BB_ACCESS_TOKEN,
+   site_id: 'learnmor.se',
+   dir: 'dist'
+  }, function(err, deploy) {
+   if (err) throw err;
+  })
 });

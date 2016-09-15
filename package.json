@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/alexeypegov/learnmor.se#readme",
   "devDependencies": {
+    "bitballoon": "^0.2.2",
     "browserify": "^13.1.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
