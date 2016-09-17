@@ -1,18 +1,18 @@
 'use strict';
 
-var gulp = require('gulp');
+var gulp = require('gulp'),
 // var bb = require('bitballoon');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var tsify = require('tsify');
-var ts = require('gulp-typescript');
-var uglify = require('gulp-uglify');
-var sourcemaps = require('gulp-sourcemaps');
-var buffer = require('vinyl-buffer');
-var clean = require('gulp-clean');
-var less = require('gulp-less');
-var uncache = require('gulp-uncache');
-var bb = require('bitballoon');
+    browserify = require('browserify'),
+    source = require('vinyl-source-stream'),
+    tsify = require('tsify'),
+    ts = require('gulp-typescript'),
+    uglify = require('gulp-uglify'),
+    sourcemaps = require('gulp-sourcemaps'),
+    buffer = require('vinyl-buffer'),
+    clean = require('gulp-clean'),
+    less = require('gulp-less'),
+    uncache = require('gulp-uncache'),
+    bb = require('bitballoon');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -24,9 +24,13 @@ gulp.task('clean', function () {
   return gulp.src('dist/**/*', {read: false}).pipe(clean());
 });
 
+function css() {
+  return gulp.src('css/**/*').pipe(less()).pipe(gulp.dest('dist/css'));
+}
+
 // todo: minimize
 gulp.task('build-css', ['clean'], function() {
-  return gulp.src('css/**/*').pipe(less()).pipe(gulp.dest('dist/css'));
+  return css();
 });
 
 gulp.task('copy-img', ['build-css'], function() {
@@ -41,32 +45,26 @@ gulp.task('copy-libs', ['copy-html'], function() {
   return gulp.src('lib/**/*.js').pipe(gulp.dest('dist'));
 });
 
-// todo: call clean synchronyously
-gulp.task('default', ['copy-libs'], function() {
+function compile(debug) {
   return browserify({
-    basedir: '.',
+    // basedir: '.',
     debug: true,
-    entries: ['src/browser.ts', 'src/morse.ts', 'src/data.ts', 'src/app.ts'],
+    entries: ['src/app.ts'],
     cache: {},
     packageCache: {}
   })
   .plugin(tsify)
   .bundle()
-  .pipe(source('app.js'))
-  .pipe(gulp.dest('dist'));
+  .pipe(source('app.js'));
+}
+
+// todo: call clean synchronyously
+gulp.task('default', ['copy-libs'], function() {
+  return compile(true).pipe(gulp.dest('dist'));
 });
 
 gulp.task('release', ['copy-libs'], function() {
-  return browserify({
-    basedir: '.',
-    debug: false,
-    entries: ['src/browser.ts', 'src/morse.ts', 'src/data.ts', 'src/app.ts'],
-    cache: {},
-    packageCache: {}
-  })
-  .plugin(tsify)
-  .bundle()
-  .pipe(source('app.js'))
+  return compile(false)
   .pipe(buffer())
   .pipe(sourcemaps.init({loadMaps: true}))
   .pipe(uglify())
@@ -82,4 +80,18 @@ gulp.task('deploy', ['release'], function() {
   }, function(err, deploy) {
    if (err) throw err;
   })
+});
+
+gulp.task('watch-compile', [], function() {
+  return compile(true).pipe(gulp.dest('dist'));
+})
+
+gulp.task('watch-less', [], function() {
+  return css();
+});
+
+gulp.task('watch', [], function() {
+  gulp.watch('src/**/*.html', ['copy-html']);
+  gulp.watch('css/**/*.less', ['watch-less']);
+  gulp.watch('src/**/*.ts', ['watch-compile']);
 });
