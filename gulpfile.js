@@ -16,16 +16,12 @@ var gulp = require('gulp'),
 
 var tsProject = ts.createProject('tsconfig.json');
 
-var paths = {
-  pages: ['src/index.html']
-};
-
 gulp.task('clean', function () {
   return gulp.src('dist/**/*', {read: false}).pipe(clean());
 });
 
 function css() {
-  return gulp.src('css/**/*').pipe(less()).pipe(gulp.dest('dist/css'));
+  return gulp.src('css/**/*.less').pipe(less()).pipe(gulp.dest('dist/css'));
 }
 
 // todo: minimize
@@ -34,11 +30,11 @@ gulp.task('build-css', ['clean'], function() {
 });
 
 gulp.task('copy-img', ['build-css'], function() {
-  return gulp.src('img/**/*.svg').pipe(gulp.dest('dist/img'));
+  return gulp.src('img/**/*').pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('copy-html', ['copy-img'], function() {
-  return gulp.src(paths.pages).pipe(uncache()).pipe(gulp.dest('dist'));
+  return gulp.src('src/**/*.html').pipe(uncache()).pipe(gulp.dest('dist'));
 });
 
 gulp.task('copy-libs', ['copy-html'], function() {

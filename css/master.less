@@ -33,6 +33,40 @@ button {
   height: 150px;
 }
 
+@keyframes play-hide {
+  100% {
+    transform: scale(.5);
+    opacity: 0;
+  }
+}
+
+@keyframes replay-show {
+  0% {
+    opacity: 0;
+    transform: scale(.5);
+  }
+
+  70% {
+    // opacity: 1;
+    transform: scale(1.3);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes replay-rotate {
+  80% {
+    transform: rotate(380deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 #play {
   display: block;
   position: absolute;
@@ -42,12 +76,39 @@ button {
   margin-left: -50px;
   width: 100px;
   height: 100px;
-  background-image: url('../img/play.svg');
-  background-size: 100px 100px;
   background-color: transparent;
 
+  .r {
+    top: 0;
+    left: 0;
+    position: absolute;
+    opacity: 0;
+  }
+
+  .p {
+    top: 0;
+    left: 0;
+    position: absolute;
+  }
+
+  .p {
+    path {
+      fill: #333;
+    }
+  }
+
   &.replay {
-    background-image: url('../img/replay.svg');
+    .p {
+      animation: play-hide .1s forwards;
+    }
+
+    .r {
+      animation: replay-show .2s forwards;
+    }
+
+    &:not(:active) {
+      animation: replay-rotate .2s forwards ease-out;
+    }
   }
 }
 
