@@ -59,7 +59,7 @@ export class WavGen {
     return this.array2dataURI(data);
   }
 
-  pcm2wav(pcm: string, sampleRate: number, bitn: number): string {
+  private pcm2wav(pcm: string, sampleRate: number, bitn: number): string {
     let i32 = this.i32toString;
     let i16 = this.i16toString;
 
@@ -82,7 +82,7 @@ export class WavGen {
  };
 
  private array2dataURI(array: number[], sampleRate = 44100, bitsPerSample = 16): string {
-   return "data:audio/wav;base64," +
+   return 'data:audio/wav;base64,' +
     btoa(this.pcm2wav(this.array2bytestream(array, bitsPerSample), sampleRate, bitsPerSample));
  };
 

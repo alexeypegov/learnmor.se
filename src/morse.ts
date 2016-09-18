@@ -62,8 +62,10 @@ class WebAudioApiPlayer extends MorsePlayer {
   }
 }
 
+type Callback = () => void;
 class WavPlayer extends MorsePlayer {
   private audio: any; // oopsie
+  private _listeners: Callback[] = [];
 
   constructor(frequency: number, start: Tone) {
     super();
@@ -77,11 +79,22 @@ class WavPlayer extends MorsePlayer {
       if (!tone) break;
     }
 
-    this.audio  = new Audio(wav.build());
+    this.audio  = new Audio();
+    this.audio.src = wav.build();
+  }
+
+  private _play(): void {
+
   }
 
   play(cb?: (success: boolean) => void): void {
-    cb && this.audio.addEventListener('ended', () => cb(true));
+    this._listeners.forEach((l) => this.audio.removeEventListener('ended', l));
+    this._listeners = [];
+
+    let listener = () => cb && cb(true);
+    this._listeners.push(listener);
+
+    this.audio.addEventListener('ended', listener);
     this.audio.play();
   }
 }
