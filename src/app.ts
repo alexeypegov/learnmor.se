@@ -116,9 +116,11 @@ class Settings {
     let speed$ = this.panel$.find('.speed');
     speed$.html(wpm + ' WPM');
     speed$.attr('data-speed', wpm);
+
     Properties.set('speed', wpm);
 
     this.speedListener && this.speedListener(wpm);
+    this.settingsButton.element$.attr('data-speed', wpm);
   }
 
   private onLevelChosen(level: number) {
@@ -128,7 +130,7 @@ class Settings {
     let factory = Registry.getFactory(level);
     if (this.levelListener && factory) {
       Properties.set('level', level);
-      this.levelListener && this.levelListener(factory);
+      this.levelListener(factory);
     }
 
     this.settingsButton.setText(level.toString());

@@ -117,6 +117,18 @@ button {
   }
 }
 
+.speed() {
+  &[data-speed="18"] {
+    background-color: #5cb85c;
+  }
+  &[data-speed="21"] {
+    background-color: #F80;
+  }
+  &[data-speed="25"] {
+    background-color: #d9534f;
+  }
+}
+
 #settings {
   display: block;
   position: absolute;
@@ -131,8 +143,9 @@ button {
   border-radius: 50px;
   font-size: 20px;
   background-color: transparent;
-  border: 3px solid #000;
-  color: #000;
+  color: #fff;
+
+  .speed;
 }
 
 #repeat {
@@ -274,15 +287,7 @@ button {
       color: #fff;
       cursor: pointer;
 
-      &[data-speed="18"] {
-        background-color: #080;
-      }
-      &[data-speed="21"] {
-        background-color: #F80;
-      }
-      &[data-speed="25"] {
-        background-color: #A00;
-      }
+      .speed;
     }
   }
 
