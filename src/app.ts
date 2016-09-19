@@ -12,13 +12,21 @@ class Button {
     this.el$ = $(selector);
   }
 
+  get element$() {
+    return this.el$;
+  }
+
   set enabled(enabled: boolean) {
     this.el$.attr('aria-disabled', `${!enabled}`);
   }
 
+  get enabled() {
+    return this.el$.attr('aria-disabled') !== 'true';
+  }
+
   onClick(cb: (button$?: JQuery, value?: any) => void) {
     this.el$.on('click', () => {
-      cb(this.el$, this.el$.val());
+      this.enabled && cb(this.el$, this.el$.val());
       return false;
     })
   }
@@ -104,7 +112,7 @@ class App {
   private player: MorsePlayer;
   private previousPlayer: MorsePlayer;
 
-  private locked: boolean = false;
+  private _locked: boolean = false;
 
   constructor() {
     this.initButtons();
@@ -124,6 +132,17 @@ class App {
 
     document.addEventListener('keydown', (event) => this.handleKeyEvent(event));
     this.settings.restore();
+  }
+
+  set locked(locked: boolean) {
+    this.playButton.enabled = !locked;
+    this.repeatButton.enabled = !locked;
+
+    this._locked = locked;
+  }
+
+  get locked() {
+    return this._locked;
   }
 
   private handleKeyEvent(event: KeyboardEvent): void {
@@ -146,6 +165,7 @@ class App {
 
     this.repeatButton.visible = false;
     this.locked = true;
+    this.playButton.element$.addClass('pressed');
 
     if (!this.question) {
       let question = this.getQuestion();
@@ -155,6 +175,7 @@ class App {
 
     this.player.play((success) => {
       this.locked = false;
+      this.playButton.element$.removeClass('pressed');
     });
   }
 
@@ -197,7 +218,14 @@ class App {
 
     this.repeatButton = new Button('#repeat');
     this.repeatButton.onClick(() => {
-      this.previousPlayer && this.previousPlayer.play();
+      if (this.locked) return;
+
+      this.locked = true;
+      this.repeatButton.element$.addClass('pressed');
+      this.previousPlayer && this.previousPlayer.play((success) => {
+        this.locked = false;
+        this.repeatButton.element$.removeClass('pressed');
+      });
     });
   }
 }

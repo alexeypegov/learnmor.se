@@ -14,6 +14,10 @@ button {
   margin: 0;
   padding: 0;
   outline: none;
+
+  &[aria-disabled='true'] {
+    opacity: .5;
+  }
 }
 
 #header {
@@ -107,7 +111,7 @@ button {
       animation: replay-show .2s forwards;
     }
 
-    &:not(:active) {
+    &.pressed {
       animation: replay-rotate .2s forwards ease-out;
     }
   }
@@ -143,9 +147,9 @@ button {
   background-color: transparent;
   background-size: 50px 50px;
 
-  animation: replay-show .2s forwards;
+  // animation: replay-show .2s forwards;
 
-  &:not(:active) {
+  &.pressed {
     animation: replay-rotate .2s forwards ease-out;
   }
 }
