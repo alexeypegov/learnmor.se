@@ -62,9 +62,7 @@ gulp.task('default', ['copy-libs'], function() {
 gulp.task('release', ['copy-libs'], function() {
   return compile(false)
   .pipe(buffer())
-  .pipe(sourcemaps.init({loadMaps: true}))
   .pipe(uglify())
-  .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('dist'));
 });
 
