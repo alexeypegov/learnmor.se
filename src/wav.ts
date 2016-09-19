@@ -6,7 +6,7 @@ class Pcm {
 
   append(duration: number, silence = false): Pcm {
     let cycle = 44100 / this.frequency;
-    let samples = (duration / 1000) * 44100;
+    let samples = Math.floor((duration / 1000) * 44100);
 
     if (silence) {
       this._data = this._data.concat(Array.apply(null, Array(samples)).map(Number.prototype.valueOf,0));

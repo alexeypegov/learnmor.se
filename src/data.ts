@@ -174,27 +174,23 @@ export class Registry {
   }
 
   static populateLevels(parent$: JQuery, selected: number = 1): void {
-    if (!parent$.children().length) {
-      let level = 1;
-      parent$.append('<div class="header">Levels</div>');
+    let level = 1;
+    Registry._sections.forEach((s) => {
+      let section$ = $('<div class="section"></div>');
+      section$.append(`<div class="title">${s}</div>`);
+      let levels$ = $('<div class="levels"></div>');
+      section$.append(levels$);
+      let levels = Registry._sectionMap[s];
+      levels.forEach((lvl) => {
+        let level$ = $(`<button class="level" data-level="${level}">${level}</button>`);
+        level$.toggleClass('selected', selected === level);
+        levels$.append(level$);
 
-      Registry._sections.forEach((s) => {
-        let section$ = $('<div class="section"></div>');
-        section$.append(`<div class="title">${s}</div>`);
-        let levels$ = $('<div class="levels"></div>');
-        section$.append(levels$);
-        let levels = Registry._sectionMap[s];
-        levels.forEach((lvl) => {
-          let level$ = $(`<button class="level" data-level="${level}">${level}</button>`);
-          level$.toggleClass('selected', selected === level);
-          levels$.append(level$);
-
-          level = level + 1;
-        });
-
-        parent$.append(section$);
+        level = level + 1;
       });
-    }
+
+      parent$.append(section$);
+    });
   }
 
   static getFactory(level: number): QuestionFactory {

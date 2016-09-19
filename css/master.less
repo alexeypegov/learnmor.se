@@ -261,9 +261,29 @@ button {
   background-color: #fff;
 
   .header {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
     font-size: 20px;
-    padding: 20px 0;
+    padding: 20px 10px;
+
+    .speed {
+      padding: 5px 10px;
+      margin: -5px 0;
+      border-radius: 5px;
+
+      color: #fff;
+      cursor: pointer;
+
+      &[data-speed="18"] {
+        background-color: #080;
+      }
+      &[data-speed="21"] {
+        background-color: #F80;
+      }
+      &[data-speed="25"] {
+        background-color: #A00;
+      }
+    }
   }
 
   button {
