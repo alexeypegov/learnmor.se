@@ -26,6 +26,10 @@ export class Properties {
     return Properties._storage.getItem(key);
   }
 
+  static getString(key: string, defaultValue: string = null): string {
+    return Properties.get(key) || defaultValue;
+  }
+
   static getNumber(key: string, defaultValue: number = -1): number {
     let s = Properties.get(key);
     if (!s) return defaultValue;

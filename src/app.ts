@@ -55,14 +55,15 @@ class PlayButton extends Button {
 }
 
 type FactoryListener = (factory: QuestionFactory) => void;
-type SpeedListener = (wpm: number) => void;
+type WpmListener = (wpm: number) => void;
 class Settings {
   private settingsButton: Button;
   private panel$: JQuery;
   private levelListener: FactoryListener;
-  private speedListener: SpeedListener;
-  private level = 1;
-  private speed = 18;
+  private wpmListener: WpmListener;
+
+  private level: number;
+  private tempo: string;
 
   private _initialized = false;
 
@@ -79,18 +80,18 @@ class Settings {
     });
 
     this.panel$.on('click', '.speed', (event) => {
-      let speed = parseFloat($(event.target).attr('data-speed'));
-      let next: number;
-      switch (speed) {
-        case 18:
-          next = 21;
+      let tempo: string = $(event.target).attr('data-tempo');
+      let next: string;
+      switch (tempo) {
+        case 'adagio':
+          next = 'moderato';
           break;
-        case 21:
-          next = 25;
+        case 'moderato':
+          next = 'presto';
           break;
-        case 25:
+        case 'presto':
         default:
-          next = 18;
+          next = 'adagio';
           break;
       }
 
@@ -100,32 +101,45 @@ class Settings {
 
   restore(): void {
     this.onLevelChosen(Properties.getNumber('level', 1));
-    this.onSpeedChosen(Properties.getNumber('speed', 18));
+    this.onSpeedChosen(Properties.getString('tempo', 'adagio'));
   }
 
   onLevelSelected(listener: FactoryListener): void {
     this.levelListener = listener;
   }
 
-  onSpeedSelected(listener: SpeedListener): void {
-    this.speedListener = listener;
+  onWpmSelected(listener: WpmListener): void {
+    this.wpmListener = listener;
   }
 
-  private onSpeedChosen(wpm: number): void {
-    this.speed = wpm;
+  private static getWpm(tempo: string): number {
+    switch (tempo) {
+      case 'presto': return 25;
+      case 'moderato': return 21;
+      case 'adagio':
+      default: return 18;
+    }
+  }
+
+  private onSpeedChosen(tempo: string): void {
+    this.tempo = tempo;
+
     let speed$ = this.panel$.find('.speed');
+
+    Properties.set('tempo', tempo);
+    speed$.attr('data-tempo', tempo);
+    this.panel$.attr('data-tempo', tempo);
+    this.settingsButton.element$.attr('data-tempo', tempo);
+
+    let wpm = Settings.getWpm(tempo);
     speed$.html(wpm + ' WPM');
-    speed$.attr('data-speed', wpm);
-
-    Properties.set('speed', wpm);
-
-    this.speedListener && this.speedListener(wpm);
-    this.settingsButton.element$.attr('data-speed', wpm);
+    this.wpmListener && this.wpmListener(wpm);
   }
 
   private onLevelChosen(level: number) {
-    this.panel$.hide();
     this.level = level;
+
+    this.panel$.hide();
 
     let factory = Registry.getFactory(level);
     if (this.levelListener && factory) {
@@ -139,7 +153,7 @@ class Settings {
   private showSettings(): void {
     if (!this._initialized) {
       this._initialized = true;
-      this.panel$.append(`<div class="header"><span class="title">Levels</span><span class="speed" data-speed="${this.speed}">${this.speed} WPM</span></div>`);
+      this.panel$.append(`<div class="header"><span class="title">Levels</span><span class="speed" data-tempo="${this.tempo}">${Settings.getWpm(this.tempo)} WPM</span></div>`);
       Registry.populateLevels(this.panel$, this.level);
     }
 
@@ -156,7 +170,7 @@ class App {
   private settings: Settings;
   private player: MorsePlayer;
   private previousPlayer: MorsePlayer;
-  private speed: number;
+  private wpm: number;
 
   private _locked: boolean = false;
 
@@ -165,7 +179,7 @@ class App {
 
     this.settings = new Settings();
     this.settings.onLevelSelected((factory) => this.onFactoryChosen(factory));
-    this.settings.onSpeedSelected((speed) => this.onSpeedChosen(speed));
+    this.settings.onWpmSelected((wpm) => this.onWpmChosen(wpm));
 
     this.answers$ = $('#answers');
 
@@ -217,7 +231,7 @@ class App {
     if (!this.question) {
       let question = this.getQuestion();
       this.player && this.player.cancel();
-      this.player = MorsePlayer.create(question.question, this.speed);
+      this.player = MorsePlayer.create(question.question, this.wpm);
     }
 
     this.player.play((success) => {
@@ -248,8 +262,8 @@ class App {
     this.repeatButton.visible = true;
   }
 
-  private onSpeedChosen(speed: number): void {
-    this.speed = speed;
+  private onWpmChosen(wpm: number): void {
+    this.wpm = wpm;
 
     this.question && this.question.deinitUI(this.answers$);
     this.question = null;

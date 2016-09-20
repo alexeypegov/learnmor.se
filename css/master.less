@@ -117,14 +117,14 @@ button {
   }
 }
 
-.speed() {
-  &[data-speed="18"] {
+.tempo() {
+  &[data-tempo="adagio"] {
     background-color: #5cb85c;
   }
-  &[data-speed="21"] {
+  &[data-tempo="moderato"] {
     background-color: #F80;
   }
-  &[data-speed="25"] {
+  &[data-tempo="presto"] {
     background-color: #d9534f;
   }
 }
@@ -145,7 +145,7 @@ button {
   background-color: transparent;
   color: #fff;
 
-  .speed;
+  .tempo;
 }
 
 #repeat {
@@ -270,7 +270,6 @@ button {
   top: 0;
   bottom: 0;
   width: 100%;
-  // padding-top: 100px;
   background-color: #fff;
 
   .header {
@@ -287,8 +286,23 @@ button {
       color: #fff;
       cursor: pointer;
 
-      .speed;
+      .tempo;
     }
+  }
+
+  // todo fix it with mixin
+  // .tempo(button.selected);
+  &[data-tempo="adagio"] .selected {
+    background-color: #5cb85c;
+    color: #fff;
+  }
+  &[data-tempo="moderato"] .selected {
+    background-color: #F80;
+    color: #fff;
+  }
+  &[data-tempo="presto"] .selected {
+    background-color: #d9534f;
+    color: #fff;
   }
 
   button {
@@ -302,9 +316,9 @@ button {
     background-color: #fff;
     line-height: 50px;
 
-    &.selected {
-      background-color: #FFD34E;
-    }
+    // &.selected {
+      // background-color: #FFD34E;
+    // }
   }
 
   .section {
