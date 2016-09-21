@@ -27,7 +27,7 @@ export abstract class MorsePlayer {
 
   cancel(): void {}
 
-  static create(text: string, wpm = 20, frequency = 680): MorsePlayer {
+  static create(text: string, wpm = 20, frequency = 840): MorsePlayer {
     let builder = new MorseBuilder(wpm);
     for (let i = 0; i < text.length; i++) {
       builder.append(text[i]);
