@@ -15,7 +15,7 @@ export class Properties {
   }
 
   static hasLocalStorage(): boolean {
-    return 'localStorage' in window && window['localStorage'] !== null;
+    return 'localStorage' in window && window['localStorage'] !== undefined;
   }
 
   static set(key: string, value: string | number): void {
