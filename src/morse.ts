@@ -47,7 +47,7 @@ class WebAudioApiPlayer extends MorsePlayer {
   }
 
   play(cb?: (success: boolean) => void): void {
-    this.signal = new Signal(680);
+    this.signal = new Signal(this.frequency);
     setTimeout(() => {
       this.start.play(this.frequency, this.signal, (success) => {
         this.signal.stop();
@@ -183,7 +183,7 @@ class MorseBuilder {
 }
 
 class Signal {
-  private static ctx: AudioContext = new (window.AudioContext || webkitAudioContext)();
+  private static ctx: AudioContext;
 
   private oscillator: OscillatorNode;
   private volume: GainNode;
@@ -192,6 +192,10 @@ class Signal {
   private _stopped = false;
 
   constructor(private frequency:number) {
+    if (!Signal.ctx) {
+      Signal.ctx = new (webkitAudioContext || AudioContext)();
+    }
+
     this.oscillator = Signal.ctx.createOscillator();
     this.oscillator.type = 'sine';
     this.oscillator.frequency.value = frequency;
@@ -202,6 +206,10 @@ class Signal {
 
     this.volume.gain.value = 0;
     this.oscillator.start();
+  }
+
+  static get supported() {
+    return webkitAudioContext || AudioContext;
   }
 
   get stopped(): boolean {
