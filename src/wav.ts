@@ -1,10 +1,18 @@
 class Pcm {
+  private static _cache:{[key: string]: number[]} = {}
+
   private _data: number[] = [];
 
   constructor(private frequency: number, private volume = 1) {
   }
 
   append(duration: number, silence = false): Pcm {
+    let key = `${duration}${silence ? 'UP' : 'DOWN'}`;
+    if (Pcm._cache.hasOwnProperty(key)) {
+      this._data = this._data.concat(Pcm._cache[key]);
+      return this;
+    }
+
     let cycle = 44100 / this.frequency;
     let samples = Math.floor((duration / 1000) * 44100);
 
@@ -27,6 +35,7 @@ class Pcm {
         temp[endNdx] = temp[endNdx] * c;
       }
 
+      Pcm._cache[key] = temp;
       this._data = this._data.concat(temp);
     }
 
