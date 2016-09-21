@@ -91,7 +91,7 @@ gulp.task('watch-less', [], function() {
   return css();
 });
 
-gulp.task('watch', [], function() {
+gulp.task('watch', ['default'], function() {
   gulp.watch('src/**/*.html', ['copy-html']);
   gulp.watch('css/**/*.less', ['watch-less']);
   gulp.watch('src/**/*.ts', ['watch-compile']);
