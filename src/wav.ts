@@ -1,5 +1,5 @@
 class Pcm {
-  private static _cache:{[key: string]: number[]} = {}
+  private static _cache:{[key: string]: number[]} = {};
 
   private _data: number[] = [];
 
