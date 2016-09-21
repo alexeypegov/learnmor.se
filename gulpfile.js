@@ -22,17 +22,24 @@ gulp.task('clean', function () {
   return gulp.src('dist/**/*', {read: false}).pipe(clean());
 });
 
-function css() {
-  return gulp.src('css/**/*.less')
+function css(release) {
+  var result = gulp.src('css/**/*.less')
     .pipe(less())
-    .pipe(autoprefixer('last 2 version'))
-    .pipe(cssnano())
-    .pipe(gulp.dest('dist/css'));
+    .pipe(autoprefixer('last 2 version'));
+
+  if (release) {
+    result = result.pipe(cssnano());
+  }
+
+  return result.pipe(gulp.dest('dist/css'));
 }
 
-// todo: minimize
 gulp.task('build-css', [], function() {
   return css();
+});
+
+gulp.task('build-css-release', [], function() {
+  return css(true);
 });
 
 gulp.task('copy-html', [], function() {
@@ -62,7 +69,7 @@ gulp.task('default', ['copy-html', 'build-css', 'copy-libs'], function() {
   return compile(true).pipe(gulp.dest('dist'));
 });
 
-gulp.task('build-release', ['copy-html', 'build-css', 'copy-libs'], function() {
+gulp.task('build-release', ['copy-html', 'build-css-release', 'copy-libs'], function() {
   return compile(false)
     .pipe(buffer())
     .pipe(uglify())

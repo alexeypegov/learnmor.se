@@ -117,14 +117,14 @@ button {
   }
 }
 
-.tempo() {
-  &[data-tempo="adagio"] {
+.tempo(@selector: ~'') {
+  &[data-tempo="adagio"] @{selector} {
     background-color: #5cb85c;
   }
-  &[data-tempo="moderato"] {
+  &[data-tempo="moderato"] @{selector} {
     background-color: #F80;
   }
-  &[data-tempo="presto"] {
+  &[data-tempo="presto"] @{selector} {
     background-color: #d9534f;
   }
 }
@@ -279,31 +279,24 @@ button {
     padding: 20px 10px;
 
     .speed {
+      min-width: 5em;
       padding: 5px 10px;
       margin: -5px 0;
       border-radius: 5px;
 
       color: #fff;
       cursor: pointer;
+      text-align: center;
 
       .tempo;
     }
   }
 
-  // todo fix it with mixin
-  // .tempo(button.selected);
-  &[data-tempo="adagio"] .selected {
-    background-color: #5cb85c;
+  .selected {
     color: #fff;
   }
-  &[data-tempo="moderato"] .selected {
-    background-color: #F80;
-    color: #fff;
-  }
-  &[data-tempo="presto"] .selected {
-    background-color: #d9534f;
-    color: #fff;
-  }
+
+  .tempo(~'button.selected');
 
   button {
     box-sizing: border-box;
@@ -315,10 +308,6 @@ button {
     color: #000;
     background-color: #fff;
     line-height: 50px;
-
-    // &.selected {
-      // background-color: #FFD34E;
-    // }
   }
 
   .section {
