@@ -83,10 +83,6 @@ class WavPlayer extends MorsePlayer {
     this.audio.src = wav.build();
   }
 
-  private _play(): void {
-
-  }
-
   play(cb?: (success: boolean) => void): void {
     this._listeners.forEach((l) => this.audio.removeEventListener('ended', l));
     this._listeners = [];
@@ -114,27 +110,24 @@ class MorseBuilder {
   }
 
   createTone(type: ToneType): Tone {
-    let coeff = 1;
-    let off = false;
+    let coeff: number;
+    let off: boolean;
 
     switch (type) {
       case ToneType.DOT:
-        coeff = 1;
+        [coeff, off] = [1, false];
         break;
       case ToneType.DASH:
-        coeff = 3;
+        [coeff, off] = [3, false];
         break;
       case ToneType.WORD_SEP:
-        coeff = 7;
-        off = true;
+        [coeff, off] = [7, true];
         break;
       case ToneType.TONE_SEP:
-        coeff = 1;
-        off = true;
+        [coeff, off] = [1, true];
         break;
       case ToneType.LETTER_SEP:
-        coeff = 3;
-        off = true;
+        [coeff, off] = [3, true];
         break;
       default:
         throw Error(`Unknown tone type: ${type}!`);
@@ -259,6 +252,10 @@ class Tone {
 
   get next(): Tone {
     return this._next;
+  }
+
+  toString(): string {
+    return `${this.silent ? '-' : '+'}${this.duration} ` + (this.next && this.next.toString() || '');
   }
 
   play(frequency: number, signal: Signal, onFinished: (success: boolean) => void): void {

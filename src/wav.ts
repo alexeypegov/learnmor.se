@@ -7,7 +7,7 @@ class Pcm {
   }
 
   append(duration: number, silence = false): Pcm {
-    let key = `${duration}${silence ? 'UP' : 'DOWN'}`;
+    let key = `${silence ? '-' : '+'}${duration}`;
     if (Pcm._cache.hasOwnProperty(key)) {
       this._data = this._data.concat(Pcm._cache[key]);
       return this;
@@ -16,11 +16,11 @@ class Pcm {
     let cycle = 44100 / this.frequency;
     let samples = Math.floor((duration / 1000) * 44100);
 
+    let temp: number[] = [];
     if (silence) {
-      this._data = this._data.concat(Array.apply(null, Array(samples)).map(Number.prototype.valueOf,0));
+      temp = Array.apply(null, Array(samples)).map(Number.prototype.valueOf,0);
     } else {
       const coeff = 2 * Math.PI;
-      let temp: number[] = [];
       for (let i = 0; i < samples; i++) {
         temp.push(Math.sin(coeff * i / cycle));
       }
@@ -34,10 +34,10 @@ class Pcm {
         let endNdx = samples - i - 1;
         temp[endNdx] = temp[endNdx] * c;
       }
-
-      Pcm._cache[key] = temp;
-      this._data = this._data.concat(temp);
     }
+
+    Pcm._cache[key] = temp;
+    this._data = this._data.concat(temp);
 
     return this;
   }
