@@ -12,7 +12,9 @@ var gulp = require('gulp'),
     clean = require('gulp-clean'),
     less = require('gulp-less'),
     uncache = require('gulp-uncache'),
-    bb = require('bitballoon');
+    bb = require('bitballoon'),
+    autoprefixer = require('gulp-autoprefixer'),
+    cssnano = require('gulp-cssnano');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -21,29 +23,30 @@ gulp.task('clean', function () {
 });
 
 function css() {
-  return gulp.src('css/**/*.less').pipe(less()).pipe(gulp.dest('dist/css'));
+  return gulp.src('css/**/*.less')
+    .pipe(less())
+    .pipe(autoprefixer('last 2 version'))
+    .pipe(cssnano())
+    .pipe(gulp.dest('dist/css'));
 }
 
 // todo: minimize
-gulp.task('build-css', ['clean'], function() {
+gulp.task('build-css', [], function() {
   return css();
 });
 
-gulp.task('copy-img', ['build-css'], function() {
-  return gulp.src('img/**/*').pipe(gulp.dest('dist/img'));
+gulp.task('copy-html', [], function() {
+  return gulp.src('src/**/*.html')
+    .pipe(uncache())
+    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-html', ['copy-img'], function() {
-  return gulp.src('src/**/*.html').pipe(uncache()).pipe(gulp.dest('dist'));
-});
-
-gulp.task('copy-libs', ['copy-html'], function() {
+gulp.task('copy-libs', [], function() {
   return gulp.src('lib/**/*.js').pipe(gulp.dest('dist'));
 });
 
 function compile(debug) {
   return browserify({
-    // basedir: '.',
     debug: true,
     entries: ['src/app.ts'],
     cache: {},
@@ -55,25 +58,29 @@ function compile(debug) {
 }
 
 // todo: call clean synchronyously
-gulp.task('default', ['copy-libs'], function() {
+gulp.task('default', ['copy-html', 'build-css', 'copy-libs'], function() {
   return compile(true).pipe(gulp.dest('dist'));
 });
 
-gulp.task('release', ['copy-libs'], function() {
+gulp.task('build-release', ['copy-html', 'build-css', 'copy-libs'], function() {
   return compile(false)
-  .pipe(buffer())
-  .pipe(uglify())
-  .pipe(gulp.dest('dist'));
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('deploy', ['release'], function() {
+gulp.task('release', ['clean'], function() {
+  gulp.start('build-release');
+});
+
+gulp.task('deploy', [], function() {
   bb.deploy({
    access_token: process.env.BB_ACCESS_TOKEN,
    site_id: 'learnmor.se',
    dir: 'dist'
   }, function(err, deploy) {
    if (err) throw err;
-  })
+  });
 });
 
 gulp.task('watch-compile', [], function() {
