@@ -55,7 +55,7 @@ export class WavGen {
   }
 
   static get supported(): boolean {
-    return typeof btoa === 'function' && document.location.search.indexOf('html5') < 0;
+    return typeof btoa === 'function' && document.location.search.indexOf('html5') < 0 && document.createElement('audio').canPlayType('audio/wav') !== '';
   }
 
   append(duration: number, silence = false): WavGen {
