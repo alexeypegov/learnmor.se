@@ -1,5 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
-
 import { WavGen } from './wav';
 
 const ALPHABET = {
@@ -40,7 +38,7 @@ export abstract class MorsePlayer {
 }
 
 class WebAudioApiPlayer extends MorsePlayer {
-  private signal: Signal;
+  private signal: Signal | undefined;
 
   constructor(private frequency: number, private start: Tone) {
     super();
@@ -49,9 +47,9 @@ class WebAudioApiPlayer extends MorsePlayer {
   play(cb?: (success: boolean) => void): void {
     this.signal = new Signal(this.frequency);
     setTimeout(() => {
-      this.start.play(this.frequency, this.signal, (success) => {
-        this.signal.stop();
-        this.signal = null;
+      this.start.play(this.frequency, this.signal!, (success) => {
+        this.signal!.stop();
+        this.signal = undefined;
         cb && cb(success);
       });
     }, 30);

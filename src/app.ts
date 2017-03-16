@@ -1,5 +1,3 @@
-/// <reference path="../typings/globals/jquery/index.d.ts" />
-
 import { visibility, keyEventToString } from './browser';
 import { MorsePlayer } from './morse';
 import { Question, QuestionFactory, Registry } from './data';
@@ -124,7 +122,7 @@ class Settings {
   private onSpeedChosen(tempo: string): void {
     this.tempo = tempo;
 
-    let speed$ = this.panel$.find('.speed');
+    const speed$ = this.panel$.find('.speed');
 
     Properties.set('tempo', tempo);
     speed$.attr('data-tempo', tempo);
@@ -164,7 +162,7 @@ class Settings {
 class App {
   private playButton: PlayButton;
   private repeatButton: Button;
-  private question: Question;
+  private question: Question | undefined;
   private factory: QuestionFactory;
   private answers$: JQuery;
   private settings: Settings;
@@ -257,7 +255,7 @@ class App {
     // }
 
     this.previousPlayer = this.player;
-    this.question = null;
+    this.question = undefined;
     this.playButton.replay = false;
     this.repeatButton.visible = true;
   }
@@ -266,14 +264,14 @@ class App {
     this.wpm = wpm;
 
     this.question && this.question.deinitUI(this.answers$);
-    this.question = null;
+    this.question = undefined;
     this.playButton.replay = false;
   }
 
   private onFactoryChosen(factory: QuestionFactory): void {
     this.question && this.question.deinitUI(this.answers$);
 
-    this.question = null;
+    this.question = undefined;
     this.factory = factory;
     this.playButton.replay = false;
   }

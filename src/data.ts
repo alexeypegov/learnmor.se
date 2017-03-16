@@ -193,7 +193,7 @@ export class Registry {
     });
   }
 
-  static getFactory(level: number): QuestionFactory {
+  static getFactory(level: number): QuestionFactory | undefined {
     let currentLevel = 1;
 
     for (let i = 0; i < Registry._sections.length; i++) {
@@ -209,7 +209,7 @@ export class Registry {
         }
     }
 
-    return null;
+    return undefined;
   }
 
   static initial(): QuestionFactory {

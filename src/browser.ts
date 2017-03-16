@@ -6,7 +6,9 @@ export function visibility(listener?: (visibility: boolean) => void): boolean {
     msHidden: 'msvisibilitychange'
   };
 
-  let eventKey: string, stateKey: string;
+  let eventKey: string | undefined; 
+  let stateKey: string | undefined;
+  
   for (stateKey in props) {
     if (stateKey in document) {
       eventKey = props[stateKey];
@@ -16,11 +18,11 @@ export function visibility(listener?: (visibility: boolean) => void): boolean {
 
   if (listener && eventKey) {
     document.addEventListener(eventKey, (event) => {
-      listener(!event.target[stateKey]);
+      listener(!event.target[stateKey!]);
     });
   }
 
-  return !document[stateKey];
+  return !document[stateKey!];
 }
 
 export function keyEventToString(event: KeyboardEvent): string {

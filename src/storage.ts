@@ -1,5 +1,5 @@
 class MockStorage extends Storage {
-  getItem(key: string): string {
+  getItem(key: string): string | null {
     return null;
   }
 
@@ -9,24 +9,24 @@ class MockStorage extends Storage {
 }
 
 export class Properties {
+  static hasLocalStorage(): boolean {
+    return 'localStorage' in window && window['localStorage'] !== undefined;
+  }
+
   private static _storage: Storage = Properties.hasLocalStorage() ? window.localStorage : new MockStorage();
 
   constructor() {
-  }
-
-  static hasLocalStorage(): boolean {
-    return 'localStorage' in window && window['localStorage'] !== undefined;
   }
 
   static set(key: string, value: string | number): void {
     Properties._storage.setItem(key, value.toString());
   }
 
-  static get(key: string): string {
+  static get(key: string): string | null {
     return Properties._storage.getItem(key);
   }
 
-  static getString(key: string, defaultValue: string = null): string {
+  static getString(key: string, defaultValue: string = ''): string {
     return Properties.get(key) || defaultValue;
   }
 
@@ -38,7 +38,7 @@ export class Properties {
     return isNaN(n) ? defaultValue : n;
   }
 
-  static remove(key: string): string {
+  static remove(key: string): string | null {
     let v = Properties.get(key);
     Properties._storage.removeItem(key);
     return v;
