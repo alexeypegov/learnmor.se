@@ -1,5 +1,4 @@
 .bitballoon
 build
-dist
 node_modules
 release
