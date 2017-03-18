@@ -1,0 +1,10 @@
+#outer {
+  position: relative;
+  width: 460px;
+  left: 50%;
+  margin-left: -230px;
+  height: 100%;
+}
+#header {
+  display: block;
+}

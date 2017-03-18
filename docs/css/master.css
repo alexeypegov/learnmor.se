@@ -1,0 +1,297 @@
+body,
+html {
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+  font-family: "-apple-system", "HelveticaNeue", "Droid Sans", sans-serif;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+button[aria-disabled='true'] {
+  opacity: .5;
+}
+#header {
+  text-align: center;
+  padding-top: 40px;
+  color: #666;
+  font-size: 120%;
+  display: none;
+}
+#content {
+  position: relative;
+  height: 100%;
+}
+#controls {
+  position: relative;
+  height: 150px;
+}
+@keyframes play-hide {
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+@keyframes replay-show {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.3);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes replay-rotate {
+  80% {
+    transform: rotate(380deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+#play {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  width: 100px;
+  height: 100px;
+  background-color: transparent;
+}
+#play .r {
+  top: 0;
+  left: 0;
+  position: absolute;
+  opacity: 0;
+}
+#play .p {
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+#play .p path {
+  fill: #333;
+}
+#play.replay .p {
+  animation: play-hide 0.1s forwards;
+}
+#play.replay .r {
+  animation: replay-show 0.2s forwards;
+}
+#play.replay.pressed {
+  animation: replay-rotate 0.2s forwards ease-out;
+}
+#settings {
+  display: block;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  top: 50%;
+  left: 20%;
+  margin-left: -25px;
+  margin-top: -25px;
+  border-radius: 50px;
+  font-size: 20px;
+  background-color: transparent;
+  color: #fff;
+}
+#settings[data-tempo="adagio"]  {
+  background-color: #5cb85c;
+}
+#settings[data-tempo="moderato"]  {
+  background-color: #F80;
+}
+#settings[data-tempo="presto"]  {
+  background-color: #d9534f;
+}
+#repeat {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 80%;
+  margin-left: -25px;
+  margin-top: -25px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  background-size: 50px 50px;
+}
+#repeat.pressed {
+  animation: replay-rotate 0.2s forwards ease-out;
+}
+#answers button {
+  width: 70px;
+  height: 70px;
+  color: black;
+  font-size: 20px;
+  border-radius: 100px;
+  background-color: #eee;
+  text-transform: uppercase;
+}
+#answers button .correct {
+  background-color: #5cb85c;
+  color: #fff;
+}
+#answers button .wrong {
+  background-color: #d9534f;
+  color: #fff;
+}
+#answers .keyboard {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-flow: row wrap;
+      flex-flow: row wrap;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  -ms-flex-align: center;
+      align-items: center;
+}
+#answers .keyboard .key {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  color: black;
+  font-size: 20px;
+  border-radius: 50px;
+  background-color: #eee;
+  text-transform: uppercase;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 50px;
+}
+#answers .keyboard .key:active {
+  background-color: #bbb;
+}
+#answers .input {
+  text-align: center;
+  margin: 0 0 20px 0;
+}
+#answers .input .char ~ .char {
+  margin-left: .3em;
+}
+#answers .input .char {
+  display: inline-block;
+  position: relative;
+  font-size: 50px;
+  line-height: 50px;
+  width: 1em;
+  height: 1em;
+  border-bottom: 2px solid #666;
+  background-color: #f5f5f5;
+  text-align: center;
+  text-transform: uppercase;
+}
+#answers .input .char.correct {
+  color: #5cb85c;
+}
+#answers .input .char[data-correct]:after {
+  content: attr(data-correct);
+  position: absolute;
+  top: -0.5em;
+  right: -0.5em;
+  font-size: 20px;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  background-color: #5cb85c;
+  color: #fff;
+  border-radius: 2px;
+}
+#answers .input.correct {
+  color: #5cb85c;
+}
+#answers .input.wrong {
+  color: #d9534f;
+}
+#settingsPanel {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+}
+#settingsPanel .header {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  font-size: 20px;
+  padding: 20px 10px;
+}
+#settingsPanel .header .speed {
+  min-width: 5em;
+  padding: 5px 10px;
+  margin: -5px 0;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+}
+#settingsPanel .header .speed[data-tempo="adagio"]  {
+  background-color: #5cb85c;
+}
+#settingsPanel .header .speed[data-tempo="moderato"]  {
+  background-color: #F80;
+}
+#settingsPanel .header .speed[data-tempo="presto"]  {
+  background-color: #d9534f;
+}
+#settingsPanel .selected {
+  color: #fff;
+}
+#settingsPanel[data-tempo="adagio"] button.selected {
+  background-color: #5cb85c;
+}
+#settingsPanel[data-tempo="moderato"] button.selected {
+  background-color: #F80;
+}
+#settingsPanel[data-tempo="presto"] button.selected {
+  background-color: #d9534f;
+}
+#settingsPanel button {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  font-size: 20px;
+  border-radius: 50px;
+  color: #000;
+  background-color: #fff;
+  line-height: 50px;
+}
+#settingsPanel .section .levels {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -ms-flex-flow: row wrap;
+      flex-flow: row wrap;
+  -ms-flex-pack: center;
+      justify-content: center;
+  background-color: #eee;
+  margin-bottom: 5px;
+}
+#settingsPanel .section .title {
+  font-size: 15px;
+  position: absolute;
+  color: #bbb;
+  padding: 5px 0 0 5px;
+}
